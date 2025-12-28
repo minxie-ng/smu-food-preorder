@@ -28,7 +28,7 @@ export default function VendorMenuScreen() {
 
   if (!selectedVendor) {
     return (
-      <ThemedView style={styles.container} background="root">
+      <ThemedView style={styles.container}>
         <ThemedText>No vendor selected</ThemedText>
       </ThemedView>
     );
@@ -82,7 +82,7 @@ export default function VendorMenuScreen() {
   };
 
   return (
-    <ThemedView style={styles.container} background="root">
+    <ThemedView style={styles.container}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,

@@ -32,7 +32,7 @@ export default function VendorListScreen() {
   };
 
   return (
-    <ThemedView style={styles.container} background="root">
+    <ThemedView style={styles.container}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,

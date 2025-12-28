@@ -27,7 +27,7 @@ export default function ConfirmationScreen() {
 
   if (!currentOrder) {
     return (
-      <ThemedView style={styles.container} background="root">
+      <ThemedView style={styles.container}>
         <ThemedText>No order found</ThemedText>
       </ThemedView>
     );
@@ -53,7 +53,7 @@ export default function ConfirmationScreen() {
   };
 
   return (
-    <ThemedView style={styles.container} background="root">
+    <ThemedView style={styles.container}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
