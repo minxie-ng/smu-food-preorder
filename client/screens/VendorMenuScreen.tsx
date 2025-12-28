@@ -218,6 +218,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     padding: Spacing.lg,
+    zIndex: 100,
     ...Shadows.card,
   },
   cartSummary: {
