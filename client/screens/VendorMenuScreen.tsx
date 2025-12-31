@@ -44,13 +44,13 @@ export default function VendorMenuScreen() {
     const quantity = getItemQuantity(item.id);
 
     return (
-      <View key={item.id} style={[styles.menuItem, { backgroundColor: theme.backgroundDefault }]}>
+      <View key={item.id} style={[styles.menuItem, { backgroundColor: Colors.light.surface1 }]}>
         <View style={styles.itemInfo}>
           <ThemedText style={styles.itemName}>{item.name}</ThemedText>
-          <ThemedText style={[styles.itemDescription, { color: theme.textSecondary }]}>
+          <ThemedText style={styles.itemDescription}>
             {item.description}
           </ThemedText>
-          <ThemedText style={[styles.itemPrice, { color: Colors.light.primary }]}>
+          <ThemedText style={styles.itemPrice}>
             ${item.price.toFixed(2)}
           </ThemedText>
         </View>
@@ -60,23 +60,35 @@ export default function VendorMenuScreen() {
             disabled={quantity === 0}
             style={({ pressed }) => [
               styles.quantityButton,
-              { borderColor: theme.border },
+              { 
+                backgroundColor: quantity === 0 ? Colors.light.surface2 : Colors.light.surface3,
+                borderColor: Colors.light.border,
+              },
               quantity === 0 && styles.quantityButtonDisabled,
-              pressed && quantity > 0 && { backgroundColor: theme.backgroundSecondary },
+              pressed && quantity > 0 && { backgroundColor: Colors.light.backgroundElevated },
             ]}
           >
-            <Feather name="minus" size={16} color={quantity === 0 ? theme.border : theme.text} />
+            <Feather 
+              name="minus" 
+              size={18} 
+              color={quantity === 0 ? Colors.light.textMuted : Colors.light.white} 
+            />
           </Pressable>
-          <ThemedText style={styles.quantityText}>{quantity}</ThemedText>
+          <View style={styles.quantityDisplay}>
+            <ThemedText style={styles.quantityText}>{quantity}</ThemedText>
+          </View>
           <Pressable
             onPress={() => addToCart(item)}
             style={({ pressed }) => [
               styles.quantityButton,
-              { borderColor: theme.border },
-              pressed && { backgroundColor: theme.backgroundSecondary },
+              { 
+                backgroundColor: Colors.light.primary,
+                borderColor: Colors.light.primary,
+              },
+              pressed && { backgroundColor: Colors.light.primaryDark },
             ]}
           >
-            <Feather name="plus" size={16} color={theme.text} />
+            <Feather name="plus" size={18} color={Colors.light.white} />
           </Pressable>
         </View>
       </View>
@@ -84,44 +96,50 @@ export default function VendorMenuScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, { backgroundColor: Colors.light.backgroundRoot }]}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
           {
             paddingTop: headerHeight + Spacing.lg,
-            paddingBottom: cartItemCount > 0 ? 120 + tabBarHeight : tabBarHeight + Spacing.lg,
+            paddingBottom: cartItemCount > 0 ? 140 + tabBarHeight : tabBarHeight + Spacing.lg,
           },
         ]}
         scrollIndicatorInsets={{ bottom: insets.bottom }}
         showsVerticalScrollIndicator={false}
       >
-        <View style={[styles.vendorInfoBar, { backgroundColor: theme.backgroundSecondary }]}>
+        <View style={[styles.vendorInfoBar, { backgroundColor: Colors.light.surface1 }]}>
           <View style={styles.infoItem}>
-            <Feather name="map-pin" size={14} color={theme.textSecondary} />
-            <ThemedText style={[styles.infoText, { color: theme.textSecondary }]}>
+            <Feather name="map-pin" size={14} color={Colors.light.textSecondary} />
+            <ThemedText style={styles.infoText}>
               {selectedVendor.location}
             </ThemedText>
           </View>
+          <View style={styles.infoDivider} />
           <View style={styles.infoItem}>
-            <Feather name="clock" size={14} color={theme.textSecondary} />
-            <ThemedText style={[styles.infoText, { color: theme.textSecondary }]}>
+            <Feather name="clock" size={14} color={Colors.light.textSecondary} />
+            <ThemedText style={styles.infoText}>
               {selectedVendor.prepTime}
             </ThemedText>
           </View>
         </View>
 
-        <ThemedText style={styles.menuTitle}>Menu</ThemedText>
+        <ThemedText style={styles.sectionTitle}>Menu</ThemedText>
 
         {selectedVendor.menuItems.map(renderMenuItem)}
       </ScrollView>
 
       {cartItemCount > 0 ? (
-        <View style={[styles.cartBar, { backgroundColor: theme.backgroundDefault, bottom: tabBarHeight }]}>
+        <View style={[styles.cartBar, { backgroundColor: Colors.light.surface2, bottom: tabBarHeight }]}>
           <View style={styles.cartSummary}>
-            <ThemedText style={styles.cartItemCount}>
-              {cartItemCount} {cartItemCount === 1 ? "item" : "items"}
-            </ThemedText>
+            <View style={styles.cartInfo}>
+              <View style={[styles.cartBadge, { backgroundColor: Colors.light.primary }]}>
+                <ThemedText style={styles.cartBadgeText}>{cartItemCount}</ThemedText>
+              </View>
+              <ThemedText style={styles.cartLabel}>
+                {cartItemCount === 1 ? "item" : "items"} in cart
+              </ThemedText>
+            </View>
             <ThemedText style={styles.cartTotal}>${cartTotal.toFixed(2)}</ThemedText>
           </View>
           <Pressable
@@ -133,7 +151,7 @@ export default function VendorMenuScreen() {
             ]}
           >
             <ThemedText style={styles.continueButtonText}>Continue to Checkout</ThemedText>
-            <Feather name="arrow-right" size={18} color="#FFFFFF" />
+            <Feather name="arrow-right" size={20} color={Colors.light.white} />
           </Pressable>
         </View>
       ) : null}
@@ -150,9 +168,10 @@ const styles = StyleSheet.create({
   },
   vendorInfoBar: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    alignItems: "center",
+    justifyContent: "center",
     padding: Spacing.md,
-    borderRadius: BorderRadius.sm,
+    borderRadius: BorderRadius.md,
     marginBottom: Spacing.xl,
   },
   infoItem: {
@@ -160,37 +179,48 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: Spacing.xs,
   },
+  infoDivider: {
+    width: 1,
+    height: 16,
+    backgroundColor: Colors.light.border,
+    marginHorizontal: Spacing.lg,
+  },
   infoText: {
     fontSize: 13,
+    color: Colors.light.textSecondary,
   },
-  menuTitle: {
+  sectionTitle: {
     ...Typography.h2,
+    color: Colors.light.white,
     marginBottom: Spacing.lg,
   },
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
     padding: Spacing.lg,
-    borderRadius: BorderRadius.md,
+    borderRadius: BorderRadius.lg,
     marginBottom: Spacing.md,
-    ...Shadows.card,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
   },
   itemInfo: {
     flex: 1,
-    marginRight: Spacing.md,
+    marginRight: Spacing.lg,
   },
   itemName: {
-    fontSize: 16,
-    fontWeight: "600",
+    ...Typography.bodyBold,
+    color: Colors.light.white,
     marginBottom: Spacing.xs,
   },
   itemDescription: {
-    fontSize: 14,
+    ...Typography.small,
+    color: Colors.light.textSecondary,
     marginBottom: Spacing.sm,
+    lineHeight: 18,
   },
   itemPrice: {
-    fontSize: 16,
-    fontWeight: "700",
+    ...Typography.bodyBold,
+    color: Colors.light.primary,
   },
   quantityControls: {
     flexDirection: "row",
@@ -198,54 +228,73 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   quantityButton: {
-    width: 32,
-    height: 32,
-    borderRadius: BorderRadius.xs,
+    width: Spacing.minTouchTarget,
+    height: Spacing.minTouchTarget,
+    borderRadius: BorderRadius.sm,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
   quantityButtonDisabled: {
-    opacity: 0.4,
+    opacity: 0.6,
+  },
+  quantityDisplay: {
+    minWidth: 32,
+    alignItems: "center",
   },
   quantityText: {
-    fontSize: 16,
-    fontWeight: "600",
-    minWidth: 24,
-    textAlign: "center",
+    ...Typography.bodyBold,
+    color: Colors.light.white,
   },
   cartBar: {
     position: "absolute",
     left: 0,
     right: 0,
     padding: Spacing.lg,
-    paddingBottom: Spacing.md,
-    zIndex: 100,
-    ...Shadows.card,
+    borderTopWidth: 1,
+    borderTopColor: Colors.light.border,
+    ...Shadows.elevated,
   },
   cartSummary: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: Spacing.md,
   },
-  cartItemCount: {
-    fontSize: 14,
+  cartInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.sm,
+  },
+  cartBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cartBadgeText: {
+    ...Typography.smallBold,
+    color: Colors.light.white,
+  },
+  cartLabel: {
+    ...Typography.caption,
+    color: Colors.light.textSecondary,
   },
   cartTotal: {
-    fontSize: 18,
-    fontWeight: "700",
+    ...Typography.h3,
+    color: Colors.light.white,
   },
   continueButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    height: 48,
-    borderRadius: BorderRadius.sm,
+    height: Spacing.buttonHeight,
+    borderRadius: BorderRadius.md,
     gap: Spacing.sm,
   },
   continueButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
+    ...Typography.bodyBold,
+    color: Colors.light.white,
   },
 });

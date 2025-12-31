@@ -1,194 +1,184 @@
-# Campus Food Pre-Order App - Design Guidelines
+# SMU Campus Food Pre-Order App - Design Guidelines
 
-## Architecture Decisions
+## Brand Identity
 
-### Authentication
-**No Auth Required** - The user is already logged in. However, include a minimal profile indicator in the header showing:
-- User avatar/initials
-- Student name (mock data)
-- Optional link to settings (can be a placeholder)
+### SMU Color Palette
+- **Primary (SMU Navy)**: `#151C55` - Main brand color, used for backgrounds
+- **Accent (SMU Gold)**: `#8A704C` - Used for CTAs, highlights, and interactive elements
+- **White**: `#FFFFFF` - Text on dark backgrounds
 
-### Navigation
-**Stack-Based Navigation** with persistent bottom navigation:
-- Primary flow: Vendor List → Menu → Pickup Time → Confirmation
-- Bottom navigation (2 tabs):
-  - **Order** (home) - Shows vendor list
-  - **History** - Shows past orders
-- Use browser history or state-based routing (no full page reloads)
+### Surface Levels (Derived from Navy)
+- **Background Root**: `#0A0E2E` - Deepest background
+- **Background Default**: `#0F1340` - Main screen background
+- **Surface 1**: `#1A2258` - Card backgrounds
+- **Surface 2**: `#222B6B` - Elevated elements, sticky bars
+- **Surface 3**: `#2A357D` - Interactive elements, buttons
 
-### Screen Specifications
+### Text Colors
+- **Primary Text**: `#FFFFFF` - Main content
+- **Secondary Text**: `rgba(255, 255, 255, 0.65)` - Supporting content
+- **Muted Text**: `rgba(255, 255, 255, 0.45)` - Placeholder, disabled states
 
-#### 1. Vendor List Screen
-- **Purpose**: Browse available food vendors and select one
-- **Layout**:
-  - Fixed header with app title "Campus Food" and profile icon (top-right)
-  - Main content: Scrollable list of vendor cards
-  - Bottom navigation bar (fixed)
-- **Components**:
-  - Vendor cards showing:
-    - Vendor name (bold, 18px)
-    - Location (12px, muted color)
-    - Prep time badge (e.g., "15-20 min")
-    - "Fully Booked" overlay (if applicable) - semi-transparent red overlay with text
-  - Cards should be tappable (entire card is clickable)
-- **States**:
-  - Available vendors: Full opacity, clear CTA
-  - Fully booked: 50% opacity, red overlay, disabled interaction
+### Semantic Colors
+- **Success**: `#4ADE80` with `rgba(74, 222, 128, 0.15)` background
+- **Error**: `#EF4444` with `rgba(239, 68, 68, 0.15)` background
+- **Accent Light**: `rgba(138, 112, 76, 0.15)` - Accent tint for icons/badges
 
-#### 2. Vendor Menu Screen
-- **Purpose**: Select items and quantities
-- **Layout**:
-  - Header with back button (left), vendor name (center)
-  - Vendor info bar: location + prep time
-  - Scrollable menu items list
-  - Fixed bottom bar with cart summary and "Continue" button
-- **Components**:
-  - Menu item cards:
-    - Item name (16px, semi-bold)
-    - Description (14px, gray)
-    - Price (16px, bold)
-    - Quantity controls: [-] [0] [+] buttons (right-aligned)
-  - Cart summary bar:
-    - Total items count + total price
-    - "Continue to Pickup Time" button (primary CTA)
-- **Interaction**:
-  - Quantity buttons: +/- increment/decrement (disable at 0)
-  - Cart summary only appears when items > 0
+## Typography Hierarchy
 
-#### 3. Pickup Time Selection Screen
-- **Purpose**: Choose when to collect the order
-- **Layout**:
-  - Header with back button, "Pickup Time" title
-  - Order summary card (collapsed view with items + total)
-  - Time slot selector (scrollable grid or list)
-  - Fixed bottom "Confirm Order" button
-- **Components**:
-  - Time slots as selectable cards (30-min intervals)
-  - Each slot shows time (e.g., "12:00 PM - 12:30 PM")
-  - Visual indicator for selected slot
-  - Disable slots that are past current time or fully booked
+### Font Sizes
+- **H1 (Page Title)**: 28px, Bold (700), letter-spacing: -0.5
+- **H2 (Section Title)**: 22px, Semi-bold (600), letter-spacing: -0.3
+- **H3 (Card Title)**: 18px, Semi-bold (600)
+- **Body**: 16px, Regular (400)
+- **Body Bold**: 16px, Semi-bold (600)
+- **Caption**: 14px, Regular (400)
+- **Caption Bold**: 14px, Semi-bold (600)
+- **Small**: 12px, Regular (400)
+- **Small Bold**: 12px, Semi-bold (600)
 
-#### 4. Order Confirmation Screen
-- **Purpose**: Show order success and details
-- **Layout**:
-  - Success icon/animation (checkmark)
-  - Order number (large, bold, e.g., "#A1234")
-  - Order details card:
-    - Vendor name + location
-    - Pickup time
-    - Items list
-    - Total price
-  - Two CTAs: "View in History" and "Order Again"
-- **Visual**: Use success green color for confirmation state
+### Usage Guidelines
+- Page titles: H1, white, centered or left-aligned
+- Section headers: Small Bold, secondary text, uppercase with letter-spacing 0.5
+- Item names: Body Bold, white
+- Item descriptions: Small, secondary text
+- Prices: Body Bold, accent color (gold)
+- Labels: Caption or Small, secondary text
 
-#### 5. Order History Screen
-- **Purpose**: View past orders
-- **Layout**:
-  - Header with "Order History" title
-  - Scrollable list of order cards
-  - Empty state if no orders
-- **Components**:
-  - Order cards showing:
-    - Order number + date
-    - Vendor name
-    - Total price
-    - Status badge (e.g., "Completed", "Picked Up")
-  - Tap card to expand/view details
+## Spacing System
 
-## Design System
+- **xs**: 4px
+- **sm**: 8px
+- **md**: 12px
+- **lg**: 16px
+- **xl**: 24px
+- **2xl**: 32px
+- **3xl**: 40px
+- **4xl**: 48px
 
-### Color Palette
-- **Primary**: `#8A704C` (gold/bronze accent - premium feel)
-- **Primary Dark**: `#6B5A3E` (pressed state)
-- **Secondary**: `#151C55` (dark navy blue - main background)
-- **Success**: `#2ECC71` (green)
-- **Error/Booked**: `#E74C3C` (red)
-- **Background Root**: `#0D1033` (deepest navy)
-- **Background Default**: `#151C55` (dark navy)
-- **Background Secondary**: `#1E2668` (lighter navy)
-- **Background Tertiary**: `#2A3278` (card surfaces)
-- **Text Primary**: `#ECEDEE` (light text on dark)
-- **Text Secondary**: `#9BA1A6` (muted text)
-- **Border**: `#2A3278` (subtle borders)
+### Component Spacing
+- Card padding: 16px (lg)
+- Section gap: 12px (md)
+- Item gap within cards: 8px (sm)
+- Minimum touch target: 44px
 
-### Typography
-- **Font Family**: System font stack (`-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`)
-- **Sizes**:
-  - H1 (Screen titles): 24px, bold
-  - H2 (Card titles): 18px, semi-bold
-  - Body: 16px, regular
-  - Caption: 14px, regular
-  - Small: 12px, regular
+## Border Radius
 
-### Spacing Scale
-- xs: 4px
-- sm: 8px
-- md: 16px
-- lg: 24px
-- xl: 32px
+- **xs**: 4px - Small badges
+- **sm**: 8px - Buttons, inputs
+- **md**: 12px - Cards
+- **lg**: 16px - Large cards
+- **xl**: 20px - Modal, prominent cards
+- **full**: 9999px - Pills, circular buttons
 
-### Component Specifications
+## Shadows
 
-**Vendor/Menu Cards**:
-- Background: white
-- Border radius: 12px
+### Card Shadow (Subtle)
+```
+shadowColor: "#000"
+shadowOffset: { width: 0, height: 2 }
+shadowOpacity: 0.1
+shadowRadius: 8
+elevation: 2
+```
+
+### Elevated Shadow (Sticky bars, modals)
+```
+shadowColor: "#000"
+shadowOffset: { width: 0, height: 8 }
+shadowOpacity: 0.2
+shadowRadius: 16
+elevation: 8
+```
+
+## Component Specifications
+
+### Cards
+- Background: Surface 1 (`#1A2258`)
+- Border: 1px solid `rgba(255, 255, 255, 0.1)`
+- Border radius: 16px (lg)
 - Padding: 16px
-- Box shadow: `0 2px 8px rgba(0,0,0,0.08)`
-- Margin between cards: 12px
 
-**Buttons**:
-- Primary CTA:
-  - Background: Primary color
-  - Text: white, 16px, semi-bold
-  - Height: 48px
-  - Border radius: 8px
-  - Full width on mobile
-  - Pressed state: Primary Dark + subtle scale (0.98)
-- Secondary button:
-  - Background: transparent
-  - Border: 1px solid Primary
-  - Text: Primary color
-- Quantity buttons:
-  - Size: 32x32px
-  - Border: 1px solid Border color
-  - Border radius: 6px
-  - Background: white
-  - Pressed state: Background #F0F0F0
+### Primary CTA Buttons
+- Background: Accent (`#8A704C`)
+- Text: White, Body Bold
+- Height: 52px
+- Border radius: 12px (md)
+- Pressed state: `#6B5A3E`
 
-**Bottom Navigation**:
-- Height: 60px
-- Background: white
-- Border top: 1px solid Border
-- Icons: 24px
-- Active tab: Primary color
-- Inactive tab: Text Secondary
-
-**Badges** (prep time, status):
-- Padding: 4px 12px
+### Secondary Buttons
+- Background: Transparent
+- Border: 1px solid `rgba(255, 255, 255, 0.1)`
+- Text: Accent color
+- Height: 52px
 - Border radius: 12px
-- Font size: 12px
-- Background colors based on type
 
-### Interaction Design
-- All buttons have `:active` state with slight scale or background change
-- Use smooth transitions (200ms ease-in-out) for state changes
-- Loading states: Show skeleton screens or subtle spinner
-- Disable "Continue" buttons when no selection made
-- Show immediate feedback for quantity changes
+### Quantity Buttons (+/-)
+- Size: 44x44px (minimum touch target)
+- Border radius: 8px
+- Plus button: Accent background, white icon
+- Minus button: Surface 3 background, white icon
+- Disabled: 60% opacity
 
-### Responsive Behavior
-- Mobile (default): 100% width, single column
-- Tablet (768px+): Max width 480px, centered
-- Desktop (1024px+): Max width 480px, centered
+### Toggle Switches
+- Track off: Surface 3
+- Track on: Accent
+- Thumb: White
 
-### Accessibility
-- All interactive elements min touch target: 44x44px
-- Contrast ratio: Minimum 4.5:1 for text
-- Focus indicators on all interactive elements
-- Semantic HTML (buttons, nav, main)
+### Sticky Bottom Bars
+- Background: Surface 2
+- Border top: 1px solid border color
+- Padding: 16px
+- Elevated shadow
 
-### Visual Feedback
-- Hover states: Subtle background color change (`rgba(0,0,0,0.04)`)
-- Active/pressed states: Scale 0.98 + darker background
-- Disabled states: 50% opacity + cursor not-allowed
-- Transitions: 200ms for color, 150ms for transform
+### Input Fields
+- Background: Surface 2
+- Border radius: 8px
+- Padding: 12px
+- Text: White
+- Placeholder: Muted text
+
+## Screen Layouts
+
+### Menu Screen
+1. Vendor info bar (Surface 1, centered location + time)
+2. Section title "Menu" (uppercase, secondary)
+3. Menu item cards with +/- controls
+4. Sticky cart summary bar (when items > 0)
+
+### Checkout Screen (Your Order)
+1. Vendor header card
+2. Order summary table (Qty, Item, Price)
+3. Toggle section (Take Out, Cutlery)
+4. Order notes input
+5. Collection details section
+6. Sticky submit bar with total + CTA
+
+### Confirmation Screen
+1. Success icon (green checkmark)
+2. Large order number card (accent background)
+3. Order details list with icons
+4. Action buttons (View History, Order Again)
+
+## Accessibility
+
+- Minimum touch target: 44x44px
+- Contrast ratio: Minimum 4.5:1 for body text
+- Focus indicators on interactive elements
+- Disabled states: 60% opacity
+- No low-opacity text that becomes unreadable
+
+## Interaction States
+
+- **Default**: Normal appearance
+- **Pressed**: Scale 0.98 + background color shift
+- **Disabled**: 50-60% opacity
+- **Loading**: Skeleton screens or spinner
+
+## Best Practices
+
+1. Use accent (gold) sparingly - only for primary CTAs and key highlights
+2. Maintain consistent spacing between cards (md: 12px)
+3. Icon colors should match their context (accent for interactive, secondary for info)
+4. All text on dark backgrounds should use white or secondary white
+5. Use surface levels to create visual hierarchy and depth

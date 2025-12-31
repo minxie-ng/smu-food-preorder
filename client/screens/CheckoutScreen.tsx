@@ -55,116 +55,122 @@ export default function CheckoutScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, { backgroundColor: Colors.light.backgroundRoot }]}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
           {
             paddingTop: headerHeight,
-            paddingBottom: 80 + tabBarHeight,
+            paddingBottom: 100 + tabBarHeight,
           },
         ]}
         scrollIndicatorInsets={{ bottom: insets.bottom }}
         showsVerticalScrollIndicator={false}
       >
-        <View style={[styles.vendorHeader, { backgroundColor: Colors.light.primary }]}>
+        <View style={[styles.vendorHeader, { backgroundColor: Colors.light.surface1 }]}>
           <ThemedText style={styles.vendorName}>{selectedVendor.name}</ThemedText>
           <View style={styles.vendorLocationRow}>
-            <Feather name="map-pin" size={12} color="rgba(255,255,255,0.8)" />
+            <Feather name="map-pin" size={12} color={Colors.light.textSecondary} />
             <ThemedText style={styles.vendorLocation}>{selectedVendor.location}</ThemedText>
           </View>
         </View>
 
-        <View style={[styles.section, { backgroundColor: theme.backgroundDefault }]}>
+        <View style={[styles.section, { backgroundColor: Colors.light.surface1 }]}>
+          <ThemedText style={styles.sectionTitle}>Order Summary</ThemedText>
           <View style={styles.tableHeader}>
             <ThemedText style={[styles.tableHeaderText, { flex: 0.5 }]}>Qty</ThemedText>
             <ThemedText style={[styles.tableHeaderText, { flex: 2 }]}>Item</ThemedText>
             <ThemedText style={[styles.tableHeaderText, { flex: 1, textAlign: "right" }]}>
-              Unit Price
+              Price
             </ThemedText>
           </View>
           {cart.map((item) => (
             <View key={item.menuItem.id} style={styles.tableRow}>
-              <ThemedText style={[styles.tableCell, { flex: 0.5 }]}>{item.quantity}</ThemedText>
+              <View style={[styles.qtyBadge, { backgroundColor: Colors.light.primaryLight }]}>
+                <ThemedText style={styles.qtyText}>{item.quantity}</ThemedText>
+              </View>
               <View style={{ flex: 2 }}>
                 <ThemedText style={styles.itemName}>{item.menuItem.name}</ThemedText>
-                <ThemedText style={[styles.itemDescription, { color: Colors.light.primary }]}>
-                  {item.menuItem.description}
-                </ThemedText>
               </View>
-              <ThemedText style={[styles.tableCell, { flex: 1, textAlign: "right" }]}>
-                ${item.menuItem.price.toFixed(2)}
+              <ThemedText style={styles.itemPrice}>
+                ${(item.menuItem.price * item.quantity).toFixed(2)}
               </ThemedText>
             </View>
           ))}
-        </View>
-
-        <View style={[styles.optionRow, { backgroundColor: theme.backgroundDefault }]}>
-          <View style={styles.optionLeft}>
-            <Feather name="shopping-bag" size={18} color={theme.text} />
-            <ThemedText style={styles.optionLabel}>Take Out</ThemedText>
+          <View style={styles.subtotalRow}>
+            <ThemedText style={styles.subtotalLabel}>Subtotal</ThemedText>
+            <ThemedText style={styles.subtotalValue}>${cartTotal.toFixed(2)}</ThemedText>
           </View>
-          <Switch
-            value={takeOut}
-            onValueChange={setTakeOut}
-            trackColor={{ false: theme.border, true: Colors.light.primary }}
-            thumbColor={theme.backgroundDefault}
-          />
         </View>
 
-        <View style={[styles.optionRow, { backgroundColor: theme.backgroundDefault }]}>
-          <View style={styles.optionLeft}>
-            <Feather name="edit-3" size={18} color={theme.text} />
-            <ThemedText style={styles.optionLabel}>Cutlery</ThemedText>
+        <View style={[styles.toggleSection, { backgroundColor: Colors.light.surface1 }]}>
+          <View style={styles.toggleRow}>
+            <View style={styles.toggleLeft}>
+              <View style={[styles.toggleIcon, { backgroundColor: Colors.light.primaryLight }]}>
+                <Feather name="shopping-bag" size={18} color={Colors.light.primary} />
+              </View>
+              <ThemedText style={styles.toggleLabel}>Take Out</ThemedText>
+            </View>
+            <Switch
+              value={takeOut}
+              onValueChange={setTakeOut}
+              trackColor={{ false: Colors.light.surface3, true: Colors.light.primary }}
+              thumbColor={Colors.light.white}
+            />
           </View>
-          <Switch
-            value={needsCutlery}
-            onValueChange={setNeedsCutlery}
-            trackColor={{ false: theme.border, true: Colors.light.primary }}
-            thumbColor={theme.backgroundDefault}
-          />
+          <View style={[styles.toggleDivider, { backgroundColor: Colors.light.border }]} />
+          <View style={styles.toggleRow}>
+            <View style={styles.toggleLeft}>
+              <View style={[styles.toggleIcon, { backgroundColor: Colors.light.primaryLight }]}>
+                <Feather name="edit-3" size={18} color={Colors.light.primary} />
+              </View>
+              <ThemedText style={styles.toggleLabel}>Cutlery</ThemedText>
+            </View>
+            <Switch
+              value={needsCutlery}
+              onValueChange={setNeedsCutlery}
+              trackColor={{ false: Colors.light.surface3, true: Colors.light.primary }}
+              thumbColor={Colors.light.white}
+            />
+          </View>
         </View>
 
-        <View style={[styles.section, { backgroundColor: theme.backgroundDefault }]}>
+        <View style={[styles.section, { backgroundColor: Colors.light.surface1 }]}>
           <ThemedText style={styles.sectionTitle}>Order Note</ThemedText>
           <TextInput
-            style={[
-              styles.noteInput,
-              { backgroundColor: theme.backgroundSecondary, color: theme.text },
-            ]}
+            style={styles.noteInput}
             placeholder="Add special instructions..."
-            placeholderTextColor={theme.textSecondary}
+            placeholderTextColor={Colors.light.textMuted}
             value={orderNote}
             onChangeText={setOrderNote}
             multiline
           />
         </View>
 
-        <View style={[styles.section, { backgroundColor: theme.backgroundDefault }]}>
-          <ThemedText style={styles.sectionTitle}>Order Info</ThemedText>
+        <View style={[styles.section, { backgroundColor: Colors.light.surface1 }]}>
+          <ThemedText style={styles.sectionTitle}>Collection Details</ThemedText>
           
           <View style={styles.infoRow}>
             <ThemedText style={styles.infoLabel}>Order Type</ThemedText>
             <View style={styles.infoValue}>
-              <ThemedText style={[styles.infoText, { color: Colors.light.primary }]}>
+              <ThemedText style={styles.infoText}>
                 {takeOut ? "Take Out" : "Dine In / Self-Collect"}
               </ThemedText>
-              <Feather name="chevron-right" size={18} color={theme.textSecondary} />
             </View>
           </View>
 
-          <View style={[styles.divider, { backgroundColor: theme.border }]} />
+          <View style={[styles.divider, { backgroundColor: Colors.light.border }]} />
 
           <Pressable style={styles.infoRow} onPress={() => setShowTimeSlots(!showTimeSlots)}>
             <ThemedText style={styles.infoLabel}>Collection Time</ThemedText>
             <View style={styles.infoValue}>
-              <ThemedText style={[styles.infoText, { color: Colors.light.primary }]}>
+              <ThemedText style={styles.infoTextAccent}>
                 {pickupTime || "Now"}
               </ThemedText>
               <Feather
-                name={showTimeSlots ? "chevron-up" : "chevron-right"}
+                name={showTimeSlots ? "chevron-up" : "chevron-down"}
                 size={18}
-                color={theme.textSecondary}
+                color={Colors.light.primary}
               />
             </View>
           </Pressable>
@@ -180,7 +186,11 @@ export default function CheckoutScreen() {
                       backgroundColor:
                         (pickupTime || "Now") === slot
                           ? Colors.light.primary
-                          : theme.backgroundSecondary,
+                          : Colors.light.surface2,
+                      borderColor:
+                        (pickupTime || "Now") === slot
+                          ? Colors.light.primary
+                          : Colors.light.border,
                     },
                     pressed && { opacity: 0.8 },
                   ]}
@@ -192,7 +202,7 @@ export default function CheckoutScreen() {
                   <ThemedText
                     style={[
                       styles.timeSlotText,
-                      { color: (pickupTime || "Now") === slot ? "#FFFFFF" : theme.text },
+                      { color: (pickupTime || "Now") === slot ? Colors.light.white : Colors.light.text },
                     ]}
                   >
                     {slot}
@@ -207,20 +217,25 @@ export default function CheckoutScreen() {
       <View
         style={[
           styles.bottomBar,
-          { backgroundColor: theme.backgroundDefault, bottom: tabBarHeight },
+          { backgroundColor: Colors.light.surface2, bottom: tabBarHeight },
         ]}
       >
-        <Pressable
-          onPress={handleSubmitOrder}
-          style={({ pressed }) => [
-            styles.submitButton,
-            { backgroundColor: Colors.light.primary },
-            pressed && { backgroundColor: Colors.light.primaryDark },
-          ]}
-        >
-          <ThemedText style={styles.submitButtonText}>Submit Order</ThemedText>
-          <ThemedText style={styles.submitButtonPrice}>${cartTotal.toFixed(2)}</ThemedText>
-        </Pressable>
+        <View style={styles.bottomBarContent}>
+          <View style={styles.totalContainer}>
+            <ThemedText style={styles.totalLabel}>Total</ThemedText>
+            <ThemedText style={styles.totalAmount}>${cartTotal.toFixed(2)}</ThemedText>
+          </View>
+          <Pressable
+            onPress={handleSubmitOrder}
+            style={({ pressed }) => [
+              styles.submitButton,
+              { backgroundColor: Colors.light.primary },
+              pressed && { backgroundColor: Colors.light.primaryDark },
+            ]}
+          >
+            <ThemedText style={styles.submitButtonText}>Submit Order</ThemedText>
+          </Pressable>
+        </View>
       </View>
     </ThemedView>
   );
@@ -235,11 +250,13 @@ const styles = StyleSheet.create({
   },
   vendorHeader: {
     padding: Spacing.lg,
+    marginHorizontal: Spacing.lg,
+    marginTop: Spacing.lg,
+    borderRadius: BorderRadius.md,
   },
   vendorName: {
-    color: "#FFFFFF",
-    fontSize: 20,
-    fontWeight: "700",
+    ...Typography.h3,
+    color: Colors.light.white,
     marginBottom: Spacing.xs,
   },
   vendorLocationRow: {
@@ -248,78 +265,132 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
   },
   vendorLocation: {
-    color: "rgba(255,255,255,0.8)",
-    fontSize: 13,
+    ...Typography.small,
+    color: Colors.light.textSecondary,
   },
   section: {
     marginTop: Spacing.md,
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.lg,
+    marginHorizontal: Spacing.lg,
+    padding: Spacing.lg,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
   },
   sectionTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#7F8C8D",
+    ...Typography.smallBold,
+    color: Colors.light.textSecondary,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
     marginBottom: Spacing.md,
   },
   tableHeader: {
     flexDirection: "row",
+    alignItems: "center",
     paddingBottom: Spacing.sm,
     borderBottomWidth: 1,
-    borderBottomColor: "#E0E0E0",
+    borderBottomColor: Colors.light.border,
     marginBottom: Spacing.md,
   },
   tableHeaderText: {
-    fontSize: 12,
-    fontWeight: "500",
-    color: "#7F8C8D",
+    ...Typography.small,
+    color: Colors.light.textMuted,
   },
   tableRow: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     paddingVertical: Spacing.sm,
   },
-  tableCell: {
-    fontSize: 14,
+  qtyBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: BorderRadius.xs,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: Spacing.md,
+  },
+  qtyText: {
+    ...Typography.captionBold,
+    color: Colors.light.primary,
   },
   itemName: {
-    fontSize: 14,
-    fontWeight: "600",
-    marginBottom: 2,
+    ...Typography.caption,
+    color: Colors.light.white,
   },
-  itemDescription: {
-    fontSize: 12,
+  itemPrice: {
+    ...Typography.captionBold,
+    color: Colors.light.white,
+    flex: 1,
+    textAlign: "right",
   },
-  optionRow: {
+  subtotalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.lg,
     marginTop: Spacing.md,
+    paddingTop: Spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: Colors.light.border,
   },
-  optionLeft: {
+  subtotalLabel: {
+    ...Typography.caption,
+    color: Colors.light.textSecondary,
+  },
+  subtotalValue: {
+    ...Typography.bodyBold,
+    color: Colors.light.primary,
+  },
+  toggleSection: {
+    marginTop: Spacing.md,
+    marginHorizontal: Spacing.lg,
+    padding: Spacing.lg,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
+  },
+  toggleRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    minHeight: Spacing.minTouchTarget,
+  },
+  toggleDivider: {
+    height: 1,
+    marginVertical: Spacing.md,
+  },
+  toggleLeft: {
     flexDirection: "row",
     alignItems: "center",
     gap: Spacing.md,
   },
-  optionLabel: {
-    fontSize: 16,
+  toggleIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: BorderRadius.sm,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  toggleLabel: {
+    ...Typography.body,
+    color: Colors.light.white,
   },
   noteInput: {
+    backgroundColor: Colors.light.surface2,
     borderRadius: BorderRadius.sm,
     padding: Spacing.md,
-    minHeight: 60,
-    fontSize: 14,
+    minHeight: 80,
+    ...Typography.caption,
+    color: Colors.light.white,
+    textAlignVertical: "top",
   },
   infoRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: Spacing.sm,
+    minHeight: Spacing.minTouchTarget,
   },
   infoLabel: {
-    fontSize: 14,
+    ...Typography.caption,
+    color: Colors.light.textSecondary,
   },
   infoValue: {
     flexDirection: "row",
@@ -327,11 +398,15 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   infoText: {
-    fontSize: 14,
+    ...Typography.caption,
+    color: Colors.light.white,
+  },
+  infoTextAccent: {
+    ...Typography.captionBold,
+    color: Colors.light.primary,
   },
   divider: {
     height: 1,
-    marginVertical: Spacing.xs,
   },
   timeSlotsContainer: {
     flexDirection: "row",
@@ -343,36 +418,46 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
     borderRadius: BorderRadius.full,
+    borderWidth: 1,
   },
   timeSlotText: {
-    fontSize: 13,
-    fontWeight: "500",
+    ...Typography.small,
   },
   bottomBar: {
     position: "absolute",
     left: 0,
     right: 0,
     padding: Spacing.lg,
-    paddingBottom: Spacing.md,
-    zIndex: 100,
-    ...Shadows.card,
+    borderTopWidth: 1,
+    borderTopColor: Colors.light.border,
+    ...Shadows.elevated,
   },
-  submitButton: {
+  bottomBarContent: {
     flexDirection: "row",
     alignItems: "center",
+    gap: Spacing.lg,
+  },
+  totalContainer: {
+    flex: 1,
+  },
+  totalLabel: {
+    ...Typography.small,
+    color: Colors.light.textSecondary,
+    marginBottom: 2,
+  },
+  totalAmount: {
+    ...Typography.h2,
+    color: Colors.light.white,
+  },
+  submitButton: {
+    flex: 1,
+    alignItems: "center",
     justifyContent: "center",
-    height: 48,
-    borderRadius: BorderRadius.sm,
-    gap: Spacing.sm,
+    height: Spacing.buttonHeight,
+    borderRadius: BorderRadius.md,
   },
   submitButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  submitButtonPrice: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "700",
+    ...Typography.bodyBold,
+    color: Colors.light.white,
   },
 });

@@ -53,7 +53,7 @@ export default function ConfirmationScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, { backgroundColor: Colors.light.backgroundRoot }]}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
@@ -65,95 +65,87 @@ export default function ConfirmationScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.successContainer}>
-          <View style={[styles.successIcon, { backgroundColor: Colors.light.success + "20" }]}>
+          <View style={[styles.successIcon, { backgroundColor: Colors.light.successLight }]}>
             <Feather name="check" size={48} color={Colors.light.success} />
           </View>
           <ThemedText style={styles.successTitle}>Order Confirmed!</ThemedText>
-          <ThemedText style={[styles.successSubtitle, { color: theme.textSecondary }]}>
+          <ThemedText style={styles.successSubtitle}>
             Show this number when collecting your order
           </ThemedText>
         </View>
 
-        <View style={[styles.orderNumberCard, { backgroundColor: Colors.light.primary }]}>
-          <ThemedText style={styles.orderNumberLabel}>Your Order Number</ThemedText>
-          <ThemedText style={styles.orderNumber}>{currentOrder.orderNumber}</ThemedText>
+        <View style={styles.orderNumberCard}>
+          <View style={styles.orderNumberInner}>
+            <ThemedText style={styles.orderNumberLabel}>Your Order Number</ThemedText>
+            <ThemedText style={styles.orderNumber}>{currentOrder.orderNumber}</ThemedText>
+          </View>
           <ThemedText style={styles.collectionNote}>
             Please show this to the staff when collecting
           </ThemedText>
         </View>
 
-        <View style={[styles.orderDetails, { backgroundColor: theme.backgroundDefault }]}>
+        <View style={[styles.orderDetails, { backgroundColor: Colors.light.surface1 }]}>
           <View style={styles.detailRow}>
-            <View style={styles.detailIconContainer}>
-              <Feather name="shopping-bag" size={18} color={Colors.light.primary} />
+            <View style={[styles.detailIconContainer, { backgroundColor: Colors.light.primaryLight }]}>
+              <Feather name="shopping-bag" size={16} color={Colors.light.primary} />
             </View>
             <View style={styles.detailContent}>
-              <ThemedText style={[styles.detailLabel, { color: theme.textSecondary }]}>
-                Vendor
-              </ThemedText>
+              <ThemedText style={styles.detailLabel}>Vendor</ThemedText>
               <ThemedText style={styles.detailValue}>{currentOrder.vendor.name}</ThemedText>
-              <ThemedText style={[styles.detailSubvalue, { color: theme.textSecondary }]}>
+              <ThemedText style={styles.detailSubvalue}>
                 {currentOrder.vendor.location}
               </ThemedText>
             </View>
           </View>
 
-          <View style={[styles.divider, { backgroundColor: theme.border }]} />
+          <View style={[styles.divider, { backgroundColor: Colors.light.border }]} />
 
           <View style={styles.detailRow}>
-            <View style={styles.detailIconContainer}>
-              <Feather name="clock" size={18} color={Colors.light.primary} />
+            <View style={[styles.detailIconContainer, { backgroundColor: Colors.light.primaryLight }]}>
+              <Feather name="clock" size={16} color={Colors.light.primary} />
             </View>
             <View style={styles.detailContent}>
-              <ThemedText style={[styles.detailLabel, { color: theme.textSecondary }]}>
-                Collection Time
-              </ThemedText>
+              <ThemedText style={styles.detailLabel}>Collection Time</ThemedText>
               <ThemedText style={styles.detailValue}>{currentOrder.pickupTime}</ThemedText>
             </View>
           </View>
 
-          <View style={[styles.divider, { backgroundColor: theme.border }]} />
+          <View style={[styles.divider, { backgroundColor: Colors.light.border }]} />
 
           <View style={styles.detailRow}>
-            <View style={styles.detailIconContainer}>
-              <Feather name="package" size={18} color={Colors.light.primary} />
+            <View style={[styles.detailIconContainer, { backgroundColor: Colors.light.primaryLight }]}>
+              <Feather name="package" size={16} color={Colors.light.primary} />
             </View>
             <View style={styles.detailContent}>
-              <ThemedText style={[styles.detailLabel, { color: theme.textSecondary }]}>
-                Order Type
-              </ThemedText>
+              <ThemedText style={styles.detailLabel}>Order Type</ThemedText>
               <ThemedText style={styles.detailValue}>
                 {currentOrder.takeOut ? "Take Out" : "Dine In / Self-Collect"}
               </ThemedText>
             </View>
           </View>
 
-          <View style={[styles.divider, { backgroundColor: theme.border }]} />
+          <View style={[styles.divider, { backgroundColor: Colors.light.border }]} />
 
           <View style={styles.detailRow}>
-            <View style={styles.detailIconContainer}>
-              <Feather name="coffee" size={18} color={Colors.light.primary} />
+            <View style={[styles.detailIconContainer, { backgroundColor: Colors.light.primaryLight }]}>
+              <Feather name="edit-3" size={16} color={Colors.light.primary} />
             </View>
             <View style={styles.detailContent}>
-              <ThemedText style={[styles.detailLabel, { color: theme.textSecondary }]}>
-                Cutlery
-              </ThemedText>
+              <ThemedText style={styles.detailLabel}>Cutlery</ThemedText>
               <ThemedText style={styles.detailValue}>
                 {currentOrder.needsCutlery ? "Cutlery Included" : "No Cutlery"}
               </ThemedText>
             </View>
           </View>
 
-          <View style={[styles.divider, { backgroundColor: theme.border }]} />
+          <View style={[styles.divider, { backgroundColor: Colors.light.border }]} />
 
           <View style={styles.detailRow}>
-            <View style={styles.detailIconContainer}>
-              <Feather name="list" size={18} color={Colors.light.primary} />
+            <View style={[styles.detailIconContainer, { backgroundColor: Colors.light.primaryLight }]}>
+              <Feather name="list" size={16} color={Colors.light.primary} />
             </View>
             <View style={[styles.detailContent, styles.itemsContent]}>
-              <ThemedText style={[styles.detailLabel, { color: theme.textSecondary }]}>
-                Items
-              </ThemedText>
+              <ThemedText style={styles.detailLabel}>Items</ThemedText>
               {currentOrder.items.map((item) => (
                 <View key={item.menuItem.id} style={styles.orderItem}>
                   <ThemedText style={styles.orderItemText}>
@@ -169,24 +161,22 @@ export default function ConfirmationScreen() {
 
           {currentOrder.orderNote ? (
             <>
-              <View style={[styles.divider, { backgroundColor: theme.border }]} />
+              <View style={[styles.divider, { backgroundColor: Colors.light.border }]} />
               <View style={styles.detailRow}>
-                <View style={styles.detailIconContainer}>
-                  <Feather name="file-text" size={18} color={Colors.light.primary} />
+                <View style={[styles.detailIconContainer, { backgroundColor: Colors.light.primaryLight }]}>
+                  <Feather name="file-text" size={16} color={Colors.light.primary} />
                 </View>
                 <View style={styles.detailContent}>
-                  <ThemedText style={[styles.detailLabel, { color: theme.textSecondary }]}>
-                    Order Note
-                  </ThemedText>
+                  <ThemedText style={styles.detailLabel}>Order Note</ThemedText>
                   <ThemedText style={styles.detailValue}>{currentOrder.orderNote}</ThemedText>
                 </View>
               </View>
             </>
           ) : null}
 
-          <View style={[styles.totalRow, { borderTopColor: theme.border }]}>
+          <View style={styles.totalRow}>
             <ThemedText style={styles.totalLabel}>Total</ThemedText>
-            <ThemedText style={[styles.totalAmount, { color: Colors.light.primary }]}>
+            <ThemedText style={styles.totalAmount}>
               ${currentOrder.total.toFixed(2)}
             </ThemedText>
           </View>
@@ -197,12 +187,11 @@ export default function ConfirmationScreen() {
             onPress={handleViewHistory}
             style={({ pressed }) => [
               styles.secondaryButton,
-              { borderColor: Colors.light.primary },
-              pressed && { backgroundColor: Colors.light.primary + "10" },
+              pressed && { backgroundColor: Colors.light.surface2 },
             ]}
           >
             <Feather name="list" size={18} color={Colors.light.primary} />
-            <ThemedText style={[styles.secondaryButtonText, { color: Colors.light.primary }]}>
+            <ThemedText style={styles.secondaryButtonText}>
               View in History
             </ThemedText>
           </Pressable>
@@ -215,7 +204,7 @@ export default function ConfirmationScreen() {
               pressed && { backgroundColor: Colors.light.primaryDark },
             ]}
           >
-            <Feather name="refresh-cw" size={18} color="#FFFFFF" />
+            <Feather name="refresh-cw" size={18} color={Colors.light.white} />
             <ThemedText style={styles.primaryButtonText}>Order Again</ThemedText>
           </Pressable>
         </View>
@@ -245,66 +234,80 @@ const styles = StyleSheet.create({
   },
   successTitle: {
     ...Typography.h1,
+    color: Colors.light.white,
     marginBottom: Spacing.xs,
   },
   successSubtitle: {
-    fontSize: 14,
+    ...Typography.caption,
+    color: Colors.light.textSecondary,
     textAlign: "center",
   },
   orderNumberCard: {
-    alignItems: "center",
+    backgroundColor: Colors.light.primary,
+    borderRadius: BorderRadius.xl,
     padding: Spacing.xl,
-    borderRadius: BorderRadius.md,
     marginBottom: Spacing.xl,
+    alignItems: "center",
+    ...Shadows.elevated,
+  },
+  orderNumberInner: {
+    alignItems: "center",
+    marginBottom: Spacing.md,
   },
   orderNumberLabel: {
+    ...Typography.small,
     color: "rgba(255,255,255,0.8)",
-    fontSize: 14,
-    marginBottom: Spacing.xs,
-  },
-  orderNumber: {
-    color: "#FFFFFF",
-    fontSize: 40,
-    fontWeight: "700",
-    letterSpacing: 3,
     marginBottom: Spacing.sm,
   },
+  orderNumber: {
+    fontSize: 44,
+    fontWeight: "700",
+    color: Colors.light.white,
+    letterSpacing: 4,
+  },
   collectionNote: {
+    ...Typography.small,
     color: "rgba(255,255,255,0.7)",
-    fontSize: 12,
     textAlign: "center",
   },
   orderDetails: {
-    borderRadius: BorderRadius.md,
+    borderRadius: BorderRadius.lg,
     padding: Spacing.lg,
     marginBottom: Spacing.xl,
-    ...Shadows.card,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
   },
   detailRow: {
     flexDirection: "row",
     paddingVertical: Spacing.sm,
   },
   detailIconContainer: {
-    width: 36,
+    width: 32,
+    height: 32,
+    borderRadius: BorderRadius.sm,
     alignItems: "center",
-    paddingTop: 2,
+    justifyContent: "center",
+    marginRight: Spacing.md,
   },
   detailContent: {
     flex: 1,
+    justifyContent: "center",
   },
   itemsContent: {
     gap: Spacing.xs,
   },
   detailLabel: {
-    fontSize: 12,
+    ...Typography.small,
+    color: Colors.light.textSecondary,
     marginBottom: 2,
   },
   detailValue: {
-    fontSize: 16,
-    fontWeight: "600",
+    ...Typography.bodyBold,
+    color: Colors.light.white,
   },
   detailSubvalue: {
-    fontSize: 13,
+    ...Typography.small,
+    color: Colors.light.textSecondary,
     marginTop: 2,
   },
   divider: {
@@ -316,26 +319,29 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   orderItemText: {
-    fontSize: 14,
+    ...Typography.caption,
+    color: Colors.light.white,
   },
   orderItemPrice: {
-    fontSize: 14,
-    fontWeight: "500",
+    ...Typography.captionBold,
+    color: Colors.light.textSecondary,
   },
   totalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     marginTop: Spacing.md,
     paddingTop: Spacing.md,
     borderTopWidth: 1,
+    borderTopColor: Colors.light.border,
   },
   totalLabel: {
-    fontSize: 16,
-    fontWeight: "600",
+    ...Typography.bodyBold,
+    color: Colors.light.white,
   },
   totalAmount: {
-    fontSize: 20,
-    fontWeight: "700",
+    ...Typography.h2,
+    color: Colors.light.primary,
   },
   actionButtons: {
     gap: Spacing.md,
@@ -344,26 +350,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    height: 48,
-    borderRadius: BorderRadius.sm,
+    height: Spacing.buttonHeight,
+    borderRadius: BorderRadius.md,
     gap: Spacing.sm,
   },
   primaryButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
+    ...Typography.bodyBold,
+    color: Colors.light.white,
   },
   secondaryButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    height: 48,
-    borderRadius: BorderRadius.sm,
+    height: Spacing.buttonHeight,
+    borderRadius: BorderRadius.md,
     borderWidth: 1,
+    borderColor: Colors.light.border,
     gap: Spacing.sm,
   },
   secondaryButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
+    ...Typography.bodyBold,
+    color: Colors.light.primary,
   },
 });

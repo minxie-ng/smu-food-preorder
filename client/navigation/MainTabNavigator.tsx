@@ -6,7 +6,7 @@ import { Platform, StyleSheet } from "react-native";
 import OrderStackNavigator from "@/navigation/OrderStackNavigator";
 import HistoryStackNavigator from "@/navigation/HistoryStackNavigator";
 import { useTheme } from "@/hooks/useTheme";
-import { Colors } from "@/constants/theme";
+import { Colors, BorderRadius } from "@/constants/theme";
 
 export type MainTabParamList = {
   OrderTab: undefined;
@@ -23,31 +23,27 @@ export default function MainTabNavigator() {
       initialRouteName="OrderTab"
       screenOptions={{
         tabBarActiveTintColor: Colors.light.primary,
-        tabBarInactiveTintColor: theme.tabIconDefault,
+        tabBarInactiveTintColor: Colors.light.tabIconDefault,
         tabBarStyle: {
           position: "absolute",
-          backgroundColor: Platform.select({
-            ios: "transparent",
-            android: theme.backgroundDefault,
-            web: theme.backgroundDefault,
-          }),
+          backgroundColor: Colors.light.surface1,
           borderTopWidth: 1,
-          borderTopColor: theme.border,
+          borderTopColor: Colors.light.border,
           elevation: 0,
           height: 60,
         },
         tabBarBackground: () =>
           Platform.OS === "ios" ? (
             <BlurView
-              intensity={100}
-              tint={isDark ? "dark" : "light"}
+              intensity={80}
+              tint="dark"
               style={StyleSheet.absoluteFill}
             />
           ) : null,
         headerShown: false,
         tabBarLabelStyle: {
           fontSize: 12,
-          fontWeight: "500",
+          fontWeight: "600",
         },
       }}
     >

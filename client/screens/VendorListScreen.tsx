@@ -9,7 +9,7 @@ import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useTheme } from "@/hooks/useTheme";
-import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
+import { Colors, Spacing, BorderRadius, Shadows, Typography } from "@/constants/theme";
 import { vendors, Vendor } from "@/data/mockData";
 import { useApp } from "@/context/AppContext";
 import { OrderStackParamList } from "@/navigation/OrderStackNavigator";
@@ -32,7 +32,7 @@ export default function VendorListScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, { backgroundColor: Colors.light.backgroundRoot }]}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
@@ -44,6 +44,8 @@ export default function VendorListScreen() {
         scrollIndicatorInsets={{ bottom: insets.bottom }}
         showsVerticalScrollIndicator={false}
       >
+        <ThemedText style={styles.sectionTitle}>Available Vendors</ThemedText>
+        
         {vendors.map((vendor) => (
           <Pressable
             key={vendor.id}
@@ -51,7 +53,7 @@ export default function VendorListScreen() {
             disabled={vendor.fullyBooked}
             style={({ pressed }) => [
               styles.vendorCard,
-              { backgroundColor: theme.backgroundDefault },
+              { backgroundColor: Colors.light.surface1 },
               pressed && !vendor.fullyBooked && styles.cardPressed,
               vendor.fullyBooked && styles.cardDisabled,
             ]}
@@ -59,27 +61,29 @@ export default function VendorListScreen() {
             <View style={styles.vendorInfo}>
               <ThemedText style={styles.vendorName}>{vendor.name}</ThemedText>
               <View style={styles.locationRow}>
-                <Feather name="map-pin" size={12} color={theme.textSecondary} />
-                <ThemedText style={[styles.vendorLocation, { color: theme.textSecondary }]}>
+                <Feather name="map-pin" size={12} color={Colors.light.textSecondary} />
+                <ThemedText style={styles.vendorLocation}>
                   {vendor.location}
                 </ThemedText>
               </View>
-              <View style={[styles.prepTimeBadge, { backgroundColor: Colors.light.secondary + "20" }]}>
-                <Feather name="clock" size={12} color={Colors.light.secondary} />
-                <ThemedText style={[styles.prepTimeText, { color: Colors.light.secondary }]}>
+              <View style={[styles.prepTimeBadge, { backgroundColor: Colors.light.primaryLight }]}>
+                <Feather name="clock" size={12} color={Colors.light.primary} />
+                <ThemedText style={styles.prepTimeText}>
                   {vendor.prepTime}
                 </ThemedText>
               </View>
             </View>
             <View style={styles.arrowContainer}>
               {vendor.fullyBooked ? (
-                <View style={[styles.bookedBadge, { backgroundColor: Colors.light.error + "15" }]}>
-                  <ThemedText style={[styles.bookedText, { color: Colors.light.error }]}>
+                <View style={[styles.bookedBadge, { backgroundColor: Colors.light.errorLight }]}>
+                  <ThemedText style={styles.bookedText}>
                     Fully Booked
                   </ThemedText>
                 </View>
               ) : (
-                <Feather name="chevron-right" size={24} color={theme.textSecondary} />
+                <View style={[styles.arrowCircle, { backgroundColor: Colors.light.surface2 }]}>
+                  <Feather name="chevron-right" size={20} color={Colors.light.textSecondary} />
+                </View>
               )}
             </View>
           </Pressable>
@@ -96,16 +100,24 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: Spacing.lg,
   },
+  sectionTitle: {
+    ...Typography.smallBold,
+    color: Colors.light.textSecondary,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginBottom: Spacing.md,
+  },
   vendorCard: {
     flexDirection: "row",
     alignItems: "center",
     padding: Spacing.lg,
-    borderRadius: BorderRadius.md,
+    borderRadius: BorderRadius.lg,
     marginBottom: Spacing.md,
-    ...Shadows.card,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
   },
   cardPressed: {
-    opacity: 0.9,
+    backgroundColor: Colors.light.surface2,
     transform: [{ scale: 0.98 }],
   },
   cardDisabled: {
@@ -115,8 +127,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   vendorName: {
-    fontSize: 18,
-    fontWeight: "600",
+    ...Typography.h3,
+    color: Colors.light.white,
     marginBottom: Spacing.xs,
   },
   locationRow: {
@@ -126,7 +138,8 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   vendorLocation: {
-    fontSize: 12,
+    ...Typography.small,
+    color: Colors.light.textSecondary,
   },
   prepTimeBadge: {
     flexDirection: "row",
@@ -138,11 +151,18 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
   },
   prepTimeText: {
-    fontSize: 12,
-    fontWeight: "500",
+    ...Typography.smallBold,
+    color: Colors.light.primary,
   },
   arrowContainer: {
     marginLeft: Spacing.md,
+  },
+  arrowCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
   },
   bookedBadge: {
     paddingVertical: Spacing.xs,
@@ -150,7 +170,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.sm,
   },
   bookedText: {
-    fontSize: 12,
-    fontWeight: "600",
+    ...Typography.smallBold,
+    color: Colors.light.error,
   },
 });

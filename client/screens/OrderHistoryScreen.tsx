@@ -34,12 +34,26 @@ export default function OrderHistoryScreen() {
       case "Pending":
         return Colors.light.primary;
       case "Ready":
-        return Colors.light.secondary;
+        return Colors.light.primary;
       case "Picked Up":
       case "Completed":
         return Colors.light.success;
       default:
-        return theme.textSecondary;
+        return Colors.light.textSecondary;
+    }
+  };
+
+  const getStatusBackground = (status: Order["status"]) => {
+    switch (status) {
+      case "Pending":
+        return Colors.light.primaryLight;
+      case "Ready":
+        return Colors.light.primaryLight;
+      case "Picked Up":
+      case "Completed":
+        return Colors.light.successLight;
+      default:
+        return Colors.light.surface2;
     }
   };
 
@@ -56,75 +70,77 @@ export default function OrderHistoryScreen() {
         onPress={() => toggleExpand(order.id)}
         style={({ pressed }) => [
           styles.orderCard,
-          { backgroundColor: theme.backgroundDefault },
-          pressed && { opacity: 0.95 },
+          { backgroundColor: Colors.light.surface1 },
+          pressed && { backgroundColor: Colors.light.surface2 },
         ]}
       >
         <View style={styles.orderHeader}>
           <View style={styles.orderHeaderLeft}>
-            <ThemedText style={[styles.orderNumber, { color: Colors.light.primary }]}>
+            <ThemedText style={styles.orderNumber}>
               {order.orderNumber}
             </ThemedText>
-            <ThemedText style={[styles.orderDate, { color: theme.textSecondary }]}>
+            <ThemedText style={styles.orderDate}>
               {formatDate(order.createdAt)}
             </ThemedText>
           </View>
           <View style={styles.orderHeaderRight}>
-            <View style={[styles.statusBadge, { backgroundColor: getStatusColor(order.status) + "20" }]}>
+            <View style={[styles.statusBadge, { backgroundColor: getStatusBackground(order.status) }]}>
               <ThemedText style={[styles.statusText, { color: getStatusColor(order.status) }]}>
                 {order.status}
               </ThemedText>
             </View>
-            <Feather
-              name={isExpanded ? "chevron-up" : "chevron-down"}
-              size={20}
-              color={theme.textSecondary}
-            />
+            <View style={[styles.expandIcon, { backgroundColor: Colors.light.surface2 }]}>
+              <Feather
+                name={isExpanded ? "chevron-up" : "chevron-down"}
+                size={16}
+                color={Colors.light.textSecondary}
+              />
+            </View>
           </View>
         </View>
 
         <View style={styles.orderSummary}>
           <ThemedText style={styles.vendorName}>{order.vendor.name}</ThemedText>
-          <ThemedText style={[styles.orderTotal, { color: Colors.light.primary }]}>
+          <ThemedText style={styles.orderTotal}>
             ${order.total.toFixed(2)}
           </ThemedText>
         </View>
 
         {isExpanded ? (
-          <View style={[styles.orderDetails, { borderTopColor: theme.border }]}>
+          <View style={[styles.orderDetails, { borderTopColor: Colors.light.border }]}>
             <View style={styles.detailRow}>
-              <Feather name="map-pin" size={14} color={theme.textSecondary} />
-              <ThemedText style={[styles.detailText, { color: theme.textSecondary }]}>
+              <Feather name="map-pin" size={14} color={Colors.light.textSecondary} />
+              <ThemedText style={styles.detailText}>
                 {order.vendor.location}
               </ThemedText>
             </View>
             <View style={styles.detailRow}>
-              <Feather name="clock" size={14} color={theme.textSecondary} />
-              <ThemedText style={[styles.detailText, { color: theme.textSecondary }]}>
+              <Feather name="clock" size={14} color={Colors.light.textSecondary} />
+              <ThemedText style={styles.detailText}>
                 Pickup: {order.pickupTime}
               </ThemedText>
             </View>
             <View style={styles.detailRow}>
-              <Feather name="package" size={14} color={theme.textSecondary} />
-              <ThemedText style={[styles.detailText, { color: theme.textSecondary }]}>
+              <Feather name="package" size={14} color={Colors.light.textSecondary} />
+              <ThemedText style={styles.detailText}>
                 {order.takeOut ? "Take Out" : "Dine In"}
               </ThemedText>
             </View>
             <View style={styles.detailRow}>
-              <Feather name="coffee" size={14} color={theme.textSecondary} />
-              <ThemedText style={[styles.detailText, { color: theme.textSecondary }]}>
+              <Feather name="edit-3" size={14} color={Colors.light.textSecondary} />
+              <ThemedText style={styles.detailText}>
                 {order.needsCutlery ? "Cutlery Included" : "No Cutlery"}
               </ThemedText>
             </View>
             {order.orderNote ? (
               <View style={styles.detailRow}>
-                <Feather name="file-text" size={14} color={theme.textSecondary} />
-                <ThemedText style={[styles.detailText, { color: theme.textSecondary }]}>
+                <Feather name="file-text" size={14} color={Colors.light.textSecondary} />
+                <ThemedText style={styles.detailText}>
                   Note: {order.orderNote}
                 </ThemedText>
               </View>
             ) : null}
-            <View style={styles.itemsList}>
+            <View style={[styles.itemsList, { backgroundColor: Colors.light.surface2 }]}>
               {order.items.map((item) => (
                 <View key={item.menuItem.id} style={styles.itemRow}>
                   <ThemedText style={styles.itemText}>
@@ -143,7 +159,7 @@ export default function OrderHistoryScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, { backgroundColor: Colors.light.backgroundRoot }]}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
@@ -157,16 +173,19 @@ export default function OrderHistoryScreen() {
       >
         {orders.length === 0 ? (
           <View style={styles.emptyState}>
-            <View style={[styles.emptyIcon, { backgroundColor: theme.backgroundSecondary }]}>
-              <Feather name="shopping-bag" size={48} color={theme.textSecondary} />
+            <View style={[styles.emptyIcon, { backgroundColor: Colors.light.surface1 }]}>
+              <Feather name="shopping-bag" size={48} color={Colors.light.textSecondary} />
             </View>
             <ThemedText style={styles.emptyTitle}>No Orders Yet</ThemedText>
-            <ThemedText style={[styles.emptySubtitle, { color: theme.textSecondary }]}>
+            <ThemedText style={styles.emptySubtitle}>
               Your order history will appear here
             </ThemedText>
           </View>
         ) : (
-          orders.map(renderOrder)
+          <>
+            <ThemedText style={styles.sectionTitle}>Recent Orders</ThemedText>
+            {orders.map(renderOrder)}
+          </>
         )}
       </ScrollView>
     </ThemedView>
@@ -179,6 +198,13 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: Spacing.lg,
+  },
+  sectionTitle: {
+    ...Typography.smallBold,
+    color: Colors.light.textSecondary,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginBottom: Spacing.md,
   },
   emptyState: {
     flex: 1,
@@ -196,16 +222,19 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     ...Typography.h2,
+    color: Colors.light.white,
     marginBottom: Spacing.sm,
   },
   emptySubtitle: {
-    fontSize: 14,
+    ...Typography.caption,
+    color: Colors.light.textSecondary,
   },
   orderCard: {
-    borderRadius: BorderRadius.md,
+    borderRadius: BorderRadius.lg,
     padding: Spacing.lg,
     marginBottom: Spacing.md,
-    ...Shadows.card,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
   },
   orderHeader: {
     flexDirection: "row",
@@ -222,12 +251,13 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   orderNumber: {
-    fontSize: 18,
-    fontWeight: "700",
+    ...Typography.h3,
+    color: Colors.light.primary,
     letterSpacing: 1,
   },
   orderDate: {
-    fontSize: 12,
+    ...Typography.small,
+    color: Colors.light.textSecondary,
     marginTop: 2,
   },
   statusBadge: {
@@ -236,8 +266,14 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
   },
   statusText: {
-    fontSize: 12,
-    fontWeight: "600",
+    ...Typography.smallBold,
+  },
+  expandIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
   },
   orderSummary: {
     flexDirection: "row",
@@ -245,11 +281,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   vendorName: {
-    fontSize: 14,
+    ...Typography.caption,
+    color: Colors.light.white,
   },
   orderTotal: {
-    fontSize: 16,
-    fontWeight: "700",
+    ...Typography.bodyBold,
+    color: Colors.light.primary,
   },
   orderDetails: {
     marginTop: Spacing.md,
@@ -263,10 +300,13 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   detailText: {
-    fontSize: 13,
+    ...Typography.small,
+    color: Colors.light.textSecondary,
   },
   itemsList: {
     marginTop: Spacing.sm,
+    padding: Spacing.md,
+    borderRadius: BorderRadius.sm,
     gap: Spacing.xs,
   },
   itemRow: {
@@ -274,10 +314,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   itemText: {
-    fontSize: 14,
+    ...Typography.caption,
+    color: Colors.light.white,
   },
   itemPrice: {
-    fontSize: 14,
-    fontWeight: "500",
+    ...Typography.captionBold,
+    color: Colors.light.textSecondary,
   },
 });
