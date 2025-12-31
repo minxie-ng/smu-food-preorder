@@ -6,6 +6,7 @@ import {
   TextInput,
   Switch,
   StyleSheet,
+  Modal,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -18,10 +19,9 @@ import { ThemedView } from "@/components/ThemedView";
 import { Colors, Spacing, BorderRadius, Shadows, Typography } from "@/constants/theme";
 import { useApp } from "@/context/AppContext";
 import { OrderStackParamList } from "@/navigation/OrderStackNavigator";
+import { TIME_SLOTS, simulateOrderSubmission } from "@/data/timeSlotAvailability";
 
 type NavigationProp = NativeStackNavigationProp<OrderStackParamList, "Checkout">;
-
-const timeSlots = ["Now", "12:00 PM", "12:15 PM", "12:30 PM", "12:45 PM", "1:00 PM"];
 
 export default function CheckoutScreen() {
   const navigation = useNavigation<NavigationProp>();
@@ -43,6 +43,10 @@ export default function CheckoutScreen() {
   const insets = useSafeAreaInsets();
 
   const [showTimeSlots, setShowTimeSlots] = useState(false);
+  const [showUnavailableModal, setShowUnavailableModal] = useState(false);
+  const [blockedTime, setBlockedTime] = useState<string | null>(null);
+  const [showSlotError, setShowSlotError] = useState(false);
+  const [rejectedSlots, setRejectedSlots] = useState<Set<string>>(new Set());
 
   if (!selectedVendor || cart.length === 0) {
     return (
@@ -58,8 +62,44 @@ export default function CheckoutScreen() {
   );
 
   const handleSubmitOrder = () => {
+    const selectedTime = pickupTime || "Now";
+    
+    if (rejectedSlots.has(selectedTime)) {
+      setBlockedTime(selectedTime);
+      setShowUnavailableModal(true);
+      return;
+    }
+    
+    const result = simulateOrderSubmission(selectedTime);
+    
+    if (!result.success && result.errorCode === "SLOT_FULL") {
+      setBlockedTime(result.blockedTime || selectedTime);
+      setRejectedSlots(prev => new Set([...prev, result.blockedTime || selectedTime]));
+      setShowUnavailableModal(true);
+      return;
+    }
+    
+    setShowSlotError(false);
     placeOrder();
     navigation.navigate("Confirmation");
+  };
+
+  const handleChooseAnotherTime = () => {
+    setShowUnavailableModal(false);
+    setShowSlotError(true);
+    setShowTimeSlots(true);
+  };
+
+  const handleBrowseOtherVendors = () => {
+    setShowUnavailableModal(false);
+    navigation.goBack();
+  };
+
+  const handleTimeSlotPress = (slotTime: string, isRejected: boolean) => {
+    if (isRejected) return;
+    
+    setPickupTime(slotTime);
+    setShowTimeSlots(false);
   };
 
   return (
@@ -176,30 +216,47 @@ export default function CheckoutScreen() {
             />
           </Pressable>
 
+          {showSlotError ? (
+            <View style={styles.helperTextContainer}>
+              <Feather name="alert-circle" size={14} color={Colors.light.error} />
+              <ThemedText style={styles.helperText}>
+                That slot just filled up. Pick another time to continue.
+              </ThemedText>
+            </View>
+          ) : null}
+
           {showTimeSlots ? (
             <View style={styles.timeSlotsContainer}>
-              {timeSlots.map((slot) => (
-                <Pressable
-                  key={slot}
-                  style={[
-                    styles.timeSlotChip,
-                    (pickupTime || "Now") === slot && styles.timeSlotChipSelected,
-                  ]}
-                  onPress={() => {
-                    setPickupTime(slot);
-                    setShowTimeSlots(false);
-                  }}
-                >
-                  <ThemedText
+              {TIME_SLOTS.map((slot) => {
+                const isSelected = (pickupTime || "Now") === slot.time;
+                const isRejected = rejectedSlots.has(slot.time);
+                
+                return (
+                  <Pressable
+                    key={slot.time}
+                    disabled={isRejected}
                     style={[
-                      styles.timeSlotText,
-                      (pickupTime || "Now") === slot && styles.timeSlotTextSelected,
+                      styles.timeSlotChip,
+                      isSelected && !isRejected && styles.timeSlotChipSelected,
+                      isRejected && styles.timeSlotChipDisabled,
                     ]}
+                    onPress={() => handleTimeSlotPress(slot.time, isRejected)}
                   >
-                    {slot}
-                  </ThemedText>
-                </Pressable>
-              ))}
+                    <ThemedText
+                      style={[
+                        styles.timeSlotText,
+                        isSelected && !isRejected && styles.timeSlotTextSelected,
+                        isRejected && styles.timeSlotTextDisabled,
+                      ]}
+                    >
+                      {slot.time}
+                    </ThemedText>
+                    {isRejected ? (
+                      <ThemedText style={styles.unavailableLabel}>Full</ThemedText>
+                    ) : null}
+                  </Pressable>
+                );
+              })}
             </View>
           ) : null}
         </View>
@@ -222,6 +279,49 @@ export default function CheckoutScreen() {
           </Pressable>
         </View>
       </View>
+
+      <Modal
+        visible={showUnavailableModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowUnavailableModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalIconContainer}>
+              <Feather name="clock" size={32} color={Colors.light.error} />
+            </View>
+            <ThemedText style={styles.modalTitle}>Time slot unavailable</ThemedText>
+            <ThemedText style={styles.modalMessage}>
+              {blockedTime} is fully booked. Please choose another pickup time.
+            </ThemedText>
+            <View style={styles.modalActions}>
+              <Pressable
+                onPress={handleChooseAnotherTime}
+                style={({ pressed }) => [
+                  styles.modalPrimaryButton,
+                  pressed && { backgroundColor: Colors.light.primaryDark },
+                ]}
+              >
+                <ThemedText style={styles.modalPrimaryButtonText}>
+                  Choose another time
+                </ThemedText>
+              </Pressable>
+              <Pressable
+                onPress={handleBrowseOtherVendors}
+                style={({ pressed }) => [
+                  styles.modalSecondaryButton,
+                  pressed && { backgroundColor: Colors.light.surface2 },
+                ]}
+              >
+                <ThemedText style={styles.modalSecondaryButtonText}>
+                  Browse other vendors
+                </ThemedText>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ThemedView>
   );
 }
@@ -379,6 +479,21 @@ const styles = StyleSheet.create({
     ...Typography.bodyBold,
     color: Colors.light.text,
   },
+  helperTextContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.sm,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.sm,
+    backgroundColor: Colors.light.errorLight,
+    borderRadius: BorderRadius.sm,
+    marginTop: Spacing.sm,
+  },
+  helperText: {
+    ...Typography.small,
+    color: Colors.light.error,
+    flex: 1,
+  },
   timeSlotsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -395,10 +510,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.surface2,
     borderWidth: 1,
     borderColor: Colors.light.border,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.xs,
   },
   timeSlotChipSelected: {
     backgroundColor: Colors.light.primary,
     borderColor: Colors.light.primary,
+  },
+  timeSlotChipDisabled: {
+    backgroundColor: Colors.light.surface3,
+    borderColor: Colors.light.border,
+    opacity: 0.6,
   },
   timeSlotText: {
     ...Typography.captionBold,
@@ -406,6 +529,14 @@ const styles = StyleSheet.create({
   },
   timeSlotTextSelected: {
     color: Colors.light.white,
+  },
+  timeSlotTextDisabled: {
+    color: Colors.light.textMuted,
+  },
+  unavailableLabel: {
+    ...Typography.small,
+    color: Colors.light.textMuted,
+    fontStyle: "italic",
   },
   bottomBar: {
     position: "absolute",
@@ -442,5 +573,67 @@ const styles = StyleSheet.create({
   submitButtonText: {
     ...Typography.bodyBold,
     color: Colors.light.white,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: Spacing.xl,
+  },
+  modalContent: {
+    backgroundColor: Colors.light.surface1,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.xl,
+    width: "100%",
+    maxWidth: 340,
+    alignItems: "center",
+  },
+  modalIconContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: Colors.light.errorLight,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: Spacing.lg,
+  },
+  modalTitle: {
+    ...Typography.h3,
+    color: Colors.light.text,
+    textAlign: "center",
+    marginBottom: Spacing.sm,
+  },
+  modalMessage: {
+    ...Typography.body,
+    color: Colors.light.textSecondary,
+    textAlign: "center",
+    marginBottom: Spacing.xl,
+  },
+  modalActions: {
+    width: "100%",
+    gap: Spacing.md,
+  },
+  modalPrimaryButton: {
+    backgroundColor: Colors.light.primary,
+    paddingVertical: Spacing.md,
+    borderRadius: BorderRadius.sm,
+    alignItems: "center",
+  },
+  modalPrimaryButtonText: {
+    ...Typography.bodyBold,
+    color: Colors.light.white,
+  },
+  modalSecondaryButton: {
+    backgroundColor: Colors.light.surface2,
+    paddingVertical: Spacing.md,
+    borderRadius: BorderRadius.sm,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: Colors.light.border,
+  },
+  modalSecondaryButtonText: {
+    ...Typography.bodyBold,
+    color: Colors.light.textSecondary,
   },
 });
