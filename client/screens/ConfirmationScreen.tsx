@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useTheme } from "@/hooks/useTheme";
 import { Colors, Spacing, BorderRadius, Shadows, Typography } from "@/constants/theme";
 import { useApp } from "@/context/AppContext";
 import { OrderStackParamList } from "@/navigation/OrderStackNavigator";
@@ -16,7 +15,6 @@ type NavigationProp = NativeStackNavigationProp<OrderStackParamList, "Confirmati
 export default function ConfirmationScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { currentOrder, clearCurrentOrder } = useApp();
-  const { theme } = useTheme();
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
@@ -27,8 +25,8 @@ export default function ConfirmationScreen() {
 
   if (!currentOrder) {
     return (
-      <ThemedView style={styles.container}>
-        <ThemedText>No order found</ThemedText>
+      <ThemedView style={[styles.container, { backgroundColor: Colors.light.navy }]}>
+        <ThemedText style={{ color: Colors.light.white }}>No order found</ThemedText>
       </ThemedView>
     );
   }
@@ -53,20 +51,20 @@ export default function ConfirmationScreen() {
   };
 
   return (
-    <ThemedView style={[styles.container, { backgroundColor: Colors.light.backgroundRoot }]}>
+    <ThemedView style={[styles.container, { backgroundColor: Colors.light.navy }]}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
           {
-            paddingTop: insets.top + Spacing.xl,
+            paddingTop: insets.top + Spacing["3xl"],
             paddingBottom: insets.bottom + Spacing.xl,
           },
         ]}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.successContainer}>
-          <View style={[styles.successIcon, { backgroundColor: Colors.light.successLight }]}>
-            <Feather name="check" size={48} color={Colors.light.success} />
+          <View style={styles.successIcon}>
+            <Feather name="check" size={48} color={Colors.light.white} />
           </View>
           <ThemedText style={styles.successTitle}>Order Confirmed!</ThemedText>
           <ThemedText style={styles.successSubtitle}>
@@ -75,19 +73,17 @@ export default function ConfirmationScreen() {
         </View>
 
         <View style={styles.orderNumberCard}>
-          <View style={styles.orderNumberInner}>
-            <ThemedText style={styles.orderNumberLabel}>Your Order Number</ThemedText>
-            <ThemedText style={styles.orderNumber}>{currentOrder.orderNumber}</ThemedText>
-          </View>
+          <ThemedText style={styles.orderNumberLabel}>Your Order Number</ThemedText>
+          <ThemedText style={styles.orderNumber}>{currentOrder.orderNumber}</ThemedText>
           <ThemedText style={styles.collectionNote}>
             Please show this to the staff when collecting
           </ThemedText>
         </View>
 
-        <View style={[styles.orderDetails, { backgroundColor: Colors.light.surface1 }]}>
+        <View style={styles.orderDetails}>
           <View style={styles.detailRow}>
-            <View style={[styles.detailIconContainer, { backgroundColor: Colors.light.primaryLight }]}>
-              <Feather name="shopping-bag" size={16} color={Colors.light.primary} />
+            <View style={styles.detailIconContainer}>
+              <Feather name="shopping-bag" size={16} color={Colors.light.textSecondary} />
             </View>
             <View style={styles.detailContent}>
               <ThemedText style={styles.detailLabel}>Vendor</ThemedText>
@@ -98,11 +94,11 @@ export default function ConfirmationScreen() {
             </View>
           </View>
 
-          <View style={[styles.divider, { backgroundColor: Colors.light.border }]} />
+          <View style={styles.divider} />
 
           <View style={styles.detailRow}>
-            <View style={[styles.detailIconContainer, { backgroundColor: Colors.light.primaryLight }]}>
-              <Feather name="clock" size={16} color={Colors.light.primary} />
+            <View style={styles.detailIconContainer}>
+              <Feather name="clock" size={16} color={Colors.light.textSecondary} />
             </View>
             <View style={styles.detailContent}>
               <ThemedText style={styles.detailLabel}>Collection Time</ThemedText>
@@ -110,11 +106,11 @@ export default function ConfirmationScreen() {
             </View>
           </View>
 
-          <View style={[styles.divider, { backgroundColor: Colors.light.border }]} />
+          <View style={styles.divider} />
 
           <View style={styles.detailRow}>
-            <View style={[styles.detailIconContainer, { backgroundColor: Colors.light.primaryLight }]}>
-              <Feather name="package" size={16} color={Colors.light.primary} />
+            <View style={styles.detailIconContainer}>
+              <Feather name="package" size={16} color={Colors.light.textSecondary} />
             </View>
             <View style={styles.detailContent}>
               <ThemedText style={styles.detailLabel}>Order Type</ThemedText>
@@ -124,11 +120,11 @@ export default function ConfirmationScreen() {
             </View>
           </View>
 
-          <View style={[styles.divider, { backgroundColor: Colors.light.border }]} />
+          <View style={styles.divider} />
 
           <View style={styles.detailRow}>
-            <View style={[styles.detailIconContainer, { backgroundColor: Colors.light.primaryLight }]}>
-              <Feather name="edit-3" size={16} color={Colors.light.primary} />
+            <View style={styles.detailIconContainer}>
+              <Feather name="edit-3" size={16} color={Colors.light.textSecondary} />
             </View>
             <View style={styles.detailContent}>
               <ThemedText style={styles.detailLabel}>Cutlery</ThemedText>
@@ -138,11 +134,11 @@ export default function ConfirmationScreen() {
             </View>
           </View>
 
-          <View style={[styles.divider, { backgroundColor: Colors.light.border }]} />
+          <View style={styles.divider} />
 
           <View style={styles.detailRow}>
-            <View style={[styles.detailIconContainer, { backgroundColor: Colors.light.primaryLight }]}>
-              <Feather name="list" size={16} color={Colors.light.primary} />
+            <View style={styles.detailIconContainer}>
+              <Feather name="list" size={16} color={Colors.light.textSecondary} />
             </View>
             <View style={[styles.detailContent, styles.itemsContent]}>
               <ThemedText style={styles.detailLabel}>Items</ThemedText>
@@ -161,10 +157,10 @@ export default function ConfirmationScreen() {
 
           {currentOrder.orderNote ? (
             <>
-              <View style={[styles.divider, { backgroundColor: Colors.light.border }]} />
+              <View style={styles.divider} />
               <View style={styles.detailRow}>
-                <View style={[styles.detailIconContainer, { backgroundColor: Colors.light.primaryLight }]}>
-                  <Feather name="file-text" size={16} color={Colors.light.primary} />
+                <View style={styles.detailIconContainer}>
+                  <Feather name="file-text" size={16} color={Colors.light.textSecondary} />
                 </View>
                 <View style={styles.detailContent}>
                   <ThemedText style={styles.detailLabel}>Order Note</ThemedText>
@@ -187,10 +183,10 @@ export default function ConfirmationScreen() {
             onPress={handleViewHistory}
             style={({ pressed }) => [
               styles.secondaryButton,
-              pressed && { backgroundColor: Colors.light.surface2 },
+              pressed && { backgroundColor: Colors.light.navyLight },
             ]}
           >
-            <Feather name="list" size={18} color={Colors.light.primary} />
+            <Feather name="list" size={18} color={Colors.light.white} />
             <ThemedText style={styles.secondaryButtonText}>
               View in History
             </ThemedText>
@@ -200,7 +196,6 @@ export default function ConfirmationScreen() {
             onPress={handleOrderAgain}
             style={({ pressed }) => [
               styles.primaryButton,
-              { backgroundColor: Colors.light.primary },
               pressed && { backgroundColor: Colors.light.primaryDark },
             ]}
           >
@@ -228,6 +223,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
+    backgroundColor: Colors.light.success,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: Spacing.lg,
@@ -239,7 +235,8 @@ const styles = StyleSheet.create({
   },
   successSubtitle: {
     ...Typography.caption,
-    color: Colors.light.textSecondary,
+    color: Colors.light.white,
+    opacity: 0.7,
     textAlign: "center",
   },
   orderNumberCard: {
@@ -250,13 +247,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     ...Shadows.elevated,
   },
-  orderNumberInner: {
-    alignItems: "center",
-    marginBottom: Spacing.md,
-  },
   orderNumberLabel: {
     ...Typography.small,
-    color: "rgba(255,255,255,0.8)",
+    color: Colors.light.white,
+    opacity: 0.8,
     marginBottom: Spacing.sm,
   },
   orderNumber: {
@@ -264,13 +258,16 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: Colors.light.white,
     letterSpacing: 4,
+    marginBottom: Spacing.sm,
   },
   collectionNote: {
     ...Typography.small,
-    color: "rgba(255,255,255,0.7)",
+    color: Colors.light.white,
+    opacity: 0.7,
     textAlign: "center",
   },
   orderDetails: {
+    backgroundColor: Colors.light.surface1,
     borderRadius: BorderRadius.lg,
     padding: Spacing.lg,
     marginBottom: Spacing.xl,
@@ -285,6 +282,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: BorderRadius.sm,
+    backgroundColor: Colors.light.surface2,
     alignItems: "center",
     justifyContent: "center",
     marginRight: Spacing.md,
@@ -303,7 +301,7 @@ const styles = StyleSheet.create({
   },
   detailValue: {
     ...Typography.bodyBold,
-    color: Colors.light.white,
+    color: Colors.light.text,
   },
   detailSubvalue: {
     ...Typography.small,
@@ -312,6 +310,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
+    backgroundColor: Colors.light.border,
     marginVertical: Spacing.sm,
   },
   orderItem: {
@@ -320,7 +319,7 @@ const styles = StyleSheet.create({
   },
   orderItemText: {
     ...Typography.caption,
-    color: Colors.light.white,
+    color: Colors.light.text,
   },
   orderItemPrice: {
     ...Typography.captionBold,
@@ -337,7 +336,7 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     ...Typography.bodyBold,
-    color: Colors.light.white,
+    color: Colors.light.text,
   },
   totalAmount: {
     ...Typography.h2,
@@ -350,8 +349,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    height: Spacing.buttonHeight,
+    height: 52,
     borderRadius: BorderRadius.md,
+    backgroundColor: Colors.light.primary,
     gap: Spacing.sm,
   },
   primaryButtonText: {
@@ -362,14 +362,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    height: Spacing.buttonHeight,
+    height: 52,
     borderRadius: BorderRadius.md,
     borderWidth: 1,
-    borderColor: Colors.light.border,
+    borderColor: "rgba(255, 255, 255, 0.3)",
     gap: Spacing.sm,
   },
   secondaryButtonText: {
     ...Typography.bodyBold,
-    color: Colors.light.primary,
+    color: Colors.light.white,
   },
 });

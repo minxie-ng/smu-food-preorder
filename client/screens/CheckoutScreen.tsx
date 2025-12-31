@@ -1,53 +1,61 @@
-import React, { useState, useMemo } from "react";
-import { View, ScrollView, Pressable, StyleSheet, Switch, TextInput } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  ScrollView,
+  Pressable,
+  TextInput,
+  Switch,
+  StyleSheet,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useTheme } from "@/hooks/useTheme";
 import { Colors, Spacing, BorderRadius, Shadows, Typography } from "@/constants/theme";
 import { useApp } from "@/context/AppContext";
-import { generateTimeSlots } from "@/data/mockData";
 import { OrderStackParamList } from "@/navigation/OrderStackNavigator";
 
 type NavigationProp = NativeStackNavigationProp<OrderStackParamList, "Checkout">;
 
+const timeSlots = ["Now", "12:00 PM", "12:15 PM", "12:30 PM", "12:45 PM", "1:00 PM"];
+
 export default function CheckoutScreen() {
   const navigation = useNavigation<NavigationProp>();
-  const {
-    selectedVendor,
-    cart,
-    getCartTotal,
+  const { 
+    selectedVendor, 
+    cart, 
+    placeOrder,
     needsCutlery,
     setNeedsCutlery,
-    orderNote,
-    setOrderNote,
     takeOut,
     setTakeOut,
+    orderNote,
+    setOrderNote,
     pickupTime,
     setPickupTime,
-    placeOrder,
   } = useApp();
-  const { theme } = useTheme();
   const headerHeight = useHeaderHeight();
-  const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
+  const insets = useSafeAreaInsets();
 
   const [showTimeSlots, setShowTimeSlots] = useState(false);
-  const timeSlots = useMemo(() => generateTimeSlots(), []);
-  const cartTotal = getCartTotal();
 
-  if (!selectedVendor) {
+  if (!selectedVendor || cart.length === 0) {
     return (
-      <ThemedView style={styles.container}>
-        <ThemedText>No vendor selected</ThemedText>
+      <ThemedView style={[styles.container, { backgroundColor: Colors.light.background }]}>
+        <ThemedText style={{ color: Colors.light.text }}>No items in cart</ThemedText>
       </ThemedView>
     );
   }
+
+  const cartTotal = cart.reduce(
+    (sum, item) => sum + item.menuItem.price * item.quantity,
+    0
+  );
 
   const handleSubmitOrder = () => {
     placeOrder();
@@ -55,60 +63,58 @@ export default function CheckoutScreen() {
   };
 
   return (
-    <ThemedView style={[styles.container, { backgroundColor: Colors.light.backgroundRoot }]}>
+    <ThemedView style={[styles.container, { backgroundColor: Colors.light.background }]}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
           {
-            paddingTop: headerHeight,
-            paddingBottom: 100 + tabBarHeight,
+            paddingTop: headerHeight + Spacing.xl,
+            paddingBottom: 120 + tabBarHeight,
           },
         ]}
         scrollIndicatorInsets={{ bottom: insets.bottom }}
         showsVerticalScrollIndicator={false}
       >
-        <View style={[styles.vendorHeader, { backgroundColor: Colors.light.surface1 }]}>
+        <View style={styles.vendorHeader}>
           <ThemedText style={styles.vendorName}>{selectedVendor.name}</ThemedText>
           <View style={styles.vendorLocationRow}>
             <Feather name="map-pin" size={12} color={Colors.light.textSecondary} />
-            <ThemedText style={styles.vendorLocation}>{selectedVendor.location}</ThemedText>
+            <ThemedText style={styles.vendorLocation}>
+              {selectedVendor.location}
+            </ThemedText>
           </View>
         </View>
 
-        <View style={[styles.section, { backgroundColor: Colors.light.surface1 }]}>
+        <View style={styles.section}>
           <ThemedText style={styles.sectionTitle}>Order Summary</ThemedText>
           <View style={styles.tableHeader}>
-            <ThemedText style={[styles.tableHeaderText, { flex: 0.5 }]}>Qty</ThemedText>
-            <ThemedText style={[styles.tableHeaderText, { flex: 2 }]}>Item</ThemedText>
-            <ThemedText style={[styles.tableHeaderText, { flex: 1, textAlign: "right" }]}>
-              Price
-            </ThemedText>
+            <ThemedText style={[styles.tableHeaderText, { width: 36 }]}>Qty</ThemedText>
+            <ThemedText style={[styles.tableHeaderText, { flex: 1, marginLeft: Spacing.md }]}>Item</ThemedText>
+            <ThemedText style={[styles.tableHeaderText, { textAlign: "right" }]}>Price</ThemedText>
           </View>
           {cart.map((item) => (
             <View key={item.menuItem.id} style={styles.tableRow}>
-              <View style={[styles.qtyBadge, { backgroundColor: Colors.light.primaryLight }]}>
+              <View style={styles.qtyBadge}>
                 <ThemedText style={styles.qtyText}>{item.quantity}</ThemedText>
               </View>
-              <View style={{ flex: 2 }}>
-                <ThemedText style={styles.itemName}>{item.menuItem.name}</ThemedText>
-              </View>
+              <ThemedText style={styles.itemName}>{item.menuItem.name}</ThemedText>
               <ThemedText style={styles.itemPrice}>
                 ${(item.menuItem.price * item.quantity).toFixed(2)}
               </ThemedText>
             </View>
           ))}
-          <View style={styles.subtotalRow}>
-            <ThemedText style={styles.subtotalLabel}>Subtotal</ThemedText>
-            <ThemedText style={styles.subtotalValue}>${cartTotal.toFixed(2)}</ThemedText>
+          <View style={styles.totalRow}>
+            <ThemedText style={styles.totalLabel}>Total</ThemedText>
+            <ThemedText style={styles.totalValue}>${cartTotal.toFixed(2)}</ThemedText>
           </View>
         </View>
 
-        <View style={[styles.toggleSection, { backgroundColor: Colors.light.surface1 }]}>
+        <View style={styles.section}>
+          <ThemedText style={styles.sectionTitle}>Options</ThemedText>
+          
           <View style={styles.toggleRow}>
-            <View style={styles.toggleLeft}>
-              <View style={[styles.toggleIcon, { backgroundColor: Colors.light.primaryLight }]}>
-                <Feather name="shopping-bag" size={18} color={Colors.light.primary} />
-              </View>
+            <View style={styles.toggleInfo}>
+              <Feather name="package" size={20} color={Colors.light.textSecondary} />
               <ThemedText style={styles.toggleLabel}>Take Out</ThemedText>
             </View>
             <Switch
@@ -118,13 +124,13 @@ export default function CheckoutScreen() {
               thumbColor={Colors.light.white}
             />
           </View>
-          <View style={[styles.toggleDivider, { backgroundColor: Colors.light.border }]} />
+
+          <View style={styles.divider} />
+
           <View style={styles.toggleRow}>
-            <View style={styles.toggleLeft}>
-              <View style={[styles.toggleIcon, { backgroundColor: Colors.light.primaryLight }]}>
-                <Feather name="edit-3" size={18} color={Colors.light.primary} />
-              </View>
-              <ThemedText style={styles.toggleLabel}>Cutlery</ThemedText>
+            <View style={styles.toggleInfo}>
+              <Feather name="edit-3" size={20} color={Colors.light.textSecondary} />
+              <ThemedText style={styles.toggleLabel}>Include Cutlery</ThemedText>
             </View>
             <Switch
               value={needsCutlery}
@@ -135,44 +141,39 @@ export default function CheckoutScreen() {
           </View>
         </View>
 
-        <View style={[styles.section, { backgroundColor: Colors.light.surface1 }]}>
-          <ThemedText style={styles.sectionTitle}>Order Note</ThemedText>
+        <View style={styles.section}>
+          <ThemedText style={styles.sectionTitle}>Order Notes</ThemedText>
           <TextInput
-            style={styles.noteInput}
+            style={styles.notesInput}
             placeholder="Add special instructions..."
             placeholderTextColor={Colors.light.textMuted}
             value={orderNote}
             onChangeText={setOrderNote}
             multiline
+            numberOfLines={3}
           />
         </View>
 
-        <View style={[styles.section, { backgroundColor: Colors.light.surface1 }]}>
+        <View style={styles.section}>
           <ThemedText style={styles.sectionTitle}>Collection Details</ThemedText>
-          
-          <View style={styles.infoRow}>
-            <ThemedText style={styles.infoLabel}>Order Type</ThemedText>
-            <View style={styles.infoValue}>
-              <ThemedText style={styles.infoText}>
-                {takeOut ? "Take Out" : "Dine In / Self-Collect"}
-              </ThemedText>
+          <Pressable
+            onPress={() => setShowTimeSlots(!showTimeSlots)}
+            style={styles.timePickerButton}
+          >
+            <View style={styles.timePickerContent}>
+              <Feather name="clock" size={20} color={Colors.light.textSecondary} />
+              <View style={styles.timePickerText}>
+                <ThemedText style={styles.timePickerLabel}>Pickup Time</ThemedText>
+                <ThemedText style={styles.timePickerValue}>
+                  {pickupTime || "Now"}
+                </ThemedText>
+              </View>
             </View>
-          </View>
-
-          <View style={[styles.divider, { backgroundColor: Colors.light.border }]} />
-
-          <Pressable style={styles.infoRow} onPress={() => setShowTimeSlots(!showTimeSlots)}>
-            <ThemedText style={styles.infoLabel}>Collection Time</ThemedText>
-            <View style={styles.infoValue}>
-              <ThemedText style={styles.infoTextAccent}>
-                {pickupTime || "Now"}
-              </ThemedText>
-              <Feather
-                name={showTimeSlots ? "chevron-up" : "chevron-down"}
-                size={18}
-                color={Colors.light.primary}
-              />
-            </View>
+            <Feather 
+              name={showTimeSlots ? "chevron-up" : "chevron-down"} 
+              size={20} 
+              color={Colors.light.textSecondary} 
+            />
           </Pressable>
 
           {showTimeSlots ? (
@@ -180,19 +181,9 @@ export default function CheckoutScreen() {
               {timeSlots.map((slot) => (
                 <Pressable
                   key={slot}
-                  style={({ pressed }) => [
+                  style={[
                     styles.timeSlotChip,
-                    {
-                      backgroundColor:
-                        (pickupTime || "Now") === slot
-                          ? Colors.light.primary
-                          : Colors.light.surface2,
-                      borderColor:
-                        (pickupTime || "Now") === slot
-                          ? Colors.light.primary
-                          : Colors.light.border,
-                    },
-                    pressed && { opacity: 0.8 },
+                    (pickupTime || "Now") === slot && styles.timeSlotChipSelected,
                   ]}
                   onPress={() => {
                     setPickupTime(slot);
@@ -202,7 +193,7 @@ export default function CheckoutScreen() {
                   <ThemedText
                     style={[
                       styles.timeSlotText,
-                      { color: (pickupTime || "Now") === slot ? Colors.light.white : Colors.light.text },
+                      (pickupTime || "Now") === slot && styles.timeSlotTextSelected,
                     ]}
                   >
                     {slot}
@@ -214,22 +205,16 @@ export default function CheckoutScreen() {
         </View>
       </ScrollView>
 
-      <View
-        style={[
-          styles.bottomBar,
-          { backgroundColor: Colors.light.surface2, bottom: tabBarHeight },
-        ]}
-      >
+      <View style={[styles.bottomBar, { bottom: tabBarHeight }]}>
         <View style={styles.bottomBarContent}>
           <View style={styles.totalContainer}>
-            <ThemedText style={styles.totalLabel}>Total</ThemedText>
-            <ThemedText style={styles.totalAmount}>${cartTotal.toFixed(2)}</ThemedText>
+            <ThemedText style={styles.bottomTotalLabel}>Total</ThemedText>
+            <ThemedText style={styles.bottomTotalAmount}>${cartTotal.toFixed(2)}</ThemedText>
           </View>
           <Pressable
             onPress={handleSubmitOrder}
             style={({ pressed }) => [
               styles.submitButton,
-              { backgroundColor: Colors.light.primary },
               pressed && { backgroundColor: Colors.light.primaryDark },
             ]}
           >
@@ -251,12 +236,15 @@ const styles = StyleSheet.create({
   vendorHeader: {
     padding: Spacing.lg,
     marginHorizontal: Spacing.lg,
-    marginTop: Spacing.lg,
+    backgroundColor: Colors.light.surface1,
     borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
+    marginBottom: Spacing.lg,
   },
   vendorName: {
     ...Typography.h3,
-    color: Colors.light.white,
+    color: Colors.light.text,
     marginBottom: Spacing.xs,
   },
   vendorLocationRow: {
@@ -269,9 +257,10 @@ const styles = StyleSheet.create({
     color: Colors.light.textSecondary,
   },
   section: {
-    marginTop: Spacing.md,
     marginHorizontal: Spacing.lg,
+    marginBottom: Spacing.lg,
     padding: Spacing.lg,
+    backgroundColor: Colors.light.surface1,
     borderRadius: BorderRadius.md,
     borderWidth: 1,
     borderColor: Colors.light.border,
@@ -304,157 +293,151 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: BorderRadius.xs,
+    backgroundColor: Colors.light.surface2,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: Spacing.md,
   },
   qtyText: {
     ...Typography.captionBold,
-    color: Colors.light.primary,
+    color: Colors.light.text,
   },
   itemName: {
     ...Typography.caption,
-    color: Colors.light.white,
+    color: Colors.light.text,
+    flex: 1,
+    marginLeft: Spacing.md,
   },
   itemPrice: {
     ...Typography.captionBold,
-    color: Colors.light.white,
-    flex: 1,
-    textAlign: "right",
+    color: Colors.light.text,
   },
-  subtotalRow: {
+  totalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: Spacing.md,
     paddingTop: Spacing.md,
+    marginTop: Spacing.sm,
     borderTopWidth: 1,
     borderTopColor: Colors.light.border,
   },
-  subtotalLabel: {
-    ...Typography.caption,
-    color: Colors.light.textSecondary,
-  },
-  subtotalValue: {
+  totalLabel: {
     ...Typography.bodyBold,
-    color: Colors.light.primary,
+    color: Colors.light.text,
   },
-  toggleSection: {
-    marginTop: Spacing.md,
-    marginHorizontal: Spacing.lg,
-    padding: Spacing.lg,
-    borderRadius: BorderRadius.md,
-    borderWidth: 1,
-    borderColor: Colors.light.border,
+  totalValue: {
+    ...Typography.h3,
+    color: Colors.light.primary,
   },
   toggleRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    minHeight: Spacing.minTouchTarget,
+    justifyContent: "space-between",
+    paddingVertical: Spacing.sm,
   },
-  toggleDivider: {
-    height: 1,
-    marginVertical: Spacing.md,
-  },
-  toggleLeft: {
+  toggleInfo: {
     flexDirection: "row",
     alignItems: "center",
     gap: Spacing.md,
   },
-  toggleIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: BorderRadius.sm,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   toggleLabel: {
     ...Typography.body,
-    color: Colors.light.white,
-  },
-  noteInput: {
-    backgroundColor: Colors.light.surface2,
-    borderRadius: BorderRadius.sm,
-    padding: Spacing.md,
-    minHeight: 80,
-    ...Typography.caption,
-    color: Colors.light.white,
-    textAlignVertical: "top",
-  },
-  infoRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    minHeight: Spacing.minTouchTarget,
-  },
-  infoLabel: {
-    ...Typography.caption,
-    color: Colors.light.textSecondary,
-  },
-  infoValue: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-  },
-  infoText: {
-    ...Typography.caption,
-    color: Colors.light.white,
-  },
-  infoTextAccent: {
-    ...Typography.captionBold,
-    color: Colors.light.primary,
+    color: Colors.light.text,
   },
   divider: {
     height: 1,
+    backgroundColor: Colors.light.border,
+    marginVertical: Spacing.sm,
+  },
+  notesInput: {
+    backgroundColor: Colors.light.surface2,
+    borderRadius: BorderRadius.sm,
+    padding: Spacing.md,
+    color: Colors.light.text,
+    ...Typography.caption,
+    minHeight: 80,
+    textAlignVertical: "top",
+  },
+  timePickerButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: Spacing.sm,
+  },
+  timePickerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+  },
+  timePickerText: {
+    gap: 2,
+  },
+  timePickerLabel: {
+    ...Typography.small,
+    color: Colors.light.textSecondary,
+  },
+  timePickerValue: {
+    ...Typography.bodyBold,
+    color: Colors.light.text,
   },
   timeSlotsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: Spacing.sm,
     marginTop: Spacing.md,
+    paddingTop: Spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: Colors.light.border,
   },
   timeSlotChip: {
     paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
+    paddingHorizontal: Spacing.lg,
     borderRadius: BorderRadius.full,
+    backgroundColor: Colors.light.surface2,
     borderWidth: 1,
+    borderColor: Colors.light.border,
+  },
+  timeSlotChipSelected: {
+    backgroundColor: Colors.light.primary,
+    borderColor: Colors.light.primary,
   },
   timeSlotText: {
-    ...Typography.small,
+    ...Typography.captionBold,
+    color: Colors.light.text,
+  },
+  timeSlotTextSelected: {
+    color: Colors.light.white,
   },
   bottomBar: {
     position: "absolute",
-    left: 0,
-    right: 0,
+    left: Spacing.lg,
+    right: Spacing.lg,
+    backgroundColor: Colors.light.navy,
+    borderRadius: BorderRadius.lg,
     padding: Spacing.lg,
-    borderTopWidth: 1,
-    borderTopColor: Colors.light.border,
     ...Shadows.elevated,
   },
   bottomBarContent: {
     flexDirection: "row",
     alignItems: "center",
-    gap: Spacing.lg,
+    justifyContent: "space-between",
   },
   totalContainer: {
-    flex: 1,
+    gap: 2,
   },
-  totalLabel: {
+  bottomTotalLabel: {
     ...Typography.small,
-    color: Colors.light.textSecondary,
-    marginBottom: 2,
+    color: Colors.light.white,
+    opacity: 0.8,
   },
-  totalAmount: {
-    ...Typography.h2,
+  bottomTotalAmount: {
+    ...Typography.h3,
     color: Colors.light.white,
   },
   submitButton: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    height: Spacing.buttonHeight,
-    borderRadius: BorderRadius.md,
+    backgroundColor: Colors.light.primary,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.xl,
+    borderRadius: BorderRadius.sm,
   },
   submitButtonText: {
     ...Typography.bodyBold,

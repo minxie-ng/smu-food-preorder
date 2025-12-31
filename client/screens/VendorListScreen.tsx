@@ -8,7 +8,6 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useTheme } from "@/hooks/useTheme";
 import { Colors, Spacing, BorderRadius, Shadows, Typography } from "@/constants/theme";
 import { vendors, Vendor } from "@/data/mockData";
 import { useApp } from "@/context/AppContext";
@@ -19,7 +18,6 @@ type NavigationProp = NativeStackNavigationProp<OrderStackParamList, "VendorList
 export default function VendorListScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { selectVendor } = useApp();
-  const { theme } = useTheme();
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const insets = useSafeAreaInsets();
@@ -32,13 +30,13 @@ export default function VendorListScreen() {
   };
 
   return (
-    <ThemedView style={[styles.container, { backgroundColor: Colors.light.backgroundRoot }]}>
+    <ThemedView style={[styles.container, { backgroundColor: Colors.light.background }]}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
           {
-            paddingTop: headerHeight + Spacing.lg,
-            paddingBottom: tabBarHeight + Spacing.lg,
+            paddingTop: headerHeight + Spacing.xl,
+            paddingBottom: tabBarHeight + Spacing.xl,
           },
         ]}
         scrollIndicatorInsets={{ bottom: insets.bottom }}
@@ -53,7 +51,6 @@ export default function VendorListScreen() {
             disabled={vendor.fullyBooked}
             style={({ pressed }) => [
               styles.vendorCard,
-              { backgroundColor: Colors.light.surface1 },
               pressed && !vendor.fullyBooked && styles.cardPressed,
               vendor.fullyBooked && styles.cardDisabled,
             ]}
@@ -66,8 +63,8 @@ export default function VendorListScreen() {
                   {vendor.location}
                 </ThemedText>
               </View>
-              <View style={[styles.prepTimeBadge, { backgroundColor: Colors.light.primaryLight }]}>
-                <Feather name="clock" size={12} color={Colors.light.primary} />
+              <View style={styles.prepTimeBadge}>
+                <Feather name="clock" size={12} color={Colors.light.textSecondary} />
                 <ThemedText style={styles.prepTimeText}>
                   {vendor.prepTime}
                 </ThemedText>
@@ -75,13 +72,13 @@ export default function VendorListScreen() {
             </View>
             <View style={styles.arrowContainer}>
               {vendor.fullyBooked ? (
-                <View style={[styles.bookedBadge, { backgroundColor: Colors.light.errorLight }]}>
+                <View style={styles.bookedBadge}>
                   <ThemedText style={styles.bookedText}>
                     Fully Booked
                   </ThemedText>
                 </View>
               ) : (
-                <View style={[styles.arrowCircle, { backgroundColor: Colors.light.surface2 }]}>
+                <View style={styles.arrowCircle}>
                   <Feather name="chevron-right" size={20} color={Colors.light.textSecondary} />
                 </View>
               )}
@@ -105,7 +102,7 @@ const styles = StyleSheet.create({
     color: Colors.light.textSecondary,
     textTransform: "uppercase",
     letterSpacing: 0.5,
-    marginBottom: Spacing.md,
+    marginBottom: Spacing.lg,
   },
   vendorCard: {
     flexDirection: "row",
@@ -113,8 +110,10 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     borderRadius: BorderRadius.lg,
     marginBottom: Spacing.md,
+    backgroundColor: Colors.light.surface1,
     borderWidth: 1,
     borderColor: Colors.light.border,
+    ...Shadows.card,
   },
   cardPressed: {
     backgroundColor: Colors.light.surface2,
@@ -128,7 +127,7 @@ const styles = StyleSheet.create({
   },
   vendorName: {
     ...Typography.h3,
-    color: Colors.light.white,
+    color: Colors.light.text,
     marginBottom: Spacing.xs,
   },
   locationRow: {
@@ -149,10 +148,11 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.xs,
     paddingHorizontal: Spacing.md,
     borderRadius: BorderRadius.full,
+    backgroundColor: Colors.light.surface2,
   },
   prepTimeText: {
     ...Typography.smallBold,
-    color: Colors.light.primary,
+    color: Colors.light.textSecondary,
   },
   arrowContainer: {
     marginLeft: Spacing.md,
@@ -163,11 +163,13 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: Colors.light.surface2,
   },
   bookedBadge: {
     paddingVertical: Spacing.xs,
     paddingHorizontal: Spacing.md,
     borderRadius: BorderRadius.sm,
+    backgroundColor: Colors.light.errorLight,
   },
   bookedText: {
     ...Typography.smallBold,

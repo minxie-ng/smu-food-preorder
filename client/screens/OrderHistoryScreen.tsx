@@ -6,14 +6,12 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useTheme } from "@/hooks/useTheme";
 import { Colors, Spacing, BorderRadius, Shadows, Typography } from "@/constants/theme";
 import { useApp } from "@/context/AppContext";
 import { Order } from "@/data/mockData";
 
 export default function OrderHistoryScreen() {
   const { orders } = useApp();
-  const { theme } = useTheme();
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const insets = useSafeAreaInsets();
@@ -70,8 +68,7 @@ export default function OrderHistoryScreen() {
         onPress={() => toggleExpand(order.id)}
         style={({ pressed }) => [
           styles.orderCard,
-          { backgroundColor: Colors.light.surface1 },
-          pressed && { backgroundColor: Colors.light.surface2 },
+          pressed && styles.orderCardPressed,
         ]}
       >
         <View style={styles.orderHeader}>
@@ -89,7 +86,7 @@ export default function OrderHistoryScreen() {
                 {order.status}
               </ThemedText>
             </View>
-            <View style={[styles.expandIcon, { backgroundColor: Colors.light.surface2 }]}>
+            <View style={styles.expandIcon}>
               <Feather
                 name={isExpanded ? "chevron-up" : "chevron-down"}
                 size={16}
@@ -107,7 +104,7 @@ export default function OrderHistoryScreen() {
         </View>
 
         {isExpanded ? (
-          <View style={[styles.orderDetails, { borderTopColor: Colors.light.border }]}>
+          <View style={styles.orderDetails}>
             <View style={styles.detailRow}>
               <Feather name="map-pin" size={14} color={Colors.light.textSecondary} />
               <ThemedText style={styles.detailText}>
@@ -140,7 +137,7 @@ export default function OrderHistoryScreen() {
                 </ThemedText>
               </View>
             ) : null}
-            <View style={[styles.itemsList, { backgroundColor: Colors.light.surface2 }]}>
+            <View style={styles.itemsList}>
               {order.items.map((item) => (
                 <View key={item.menuItem.id} style={styles.itemRow}>
                   <ThemedText style={styles.itemText}>
@@ -159,13 +156,13 @@ export default function OrderHistoryScreen() {
   };
 
   return (
-    <ThemedView style={[styles.container, { backgroundColor: Colors.light.backgroundRoot }]}>
+    <ThemedView style={[styles.container, { backgroundColor: Colors.light.background }]}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
           {
-            paddingTop: headerHeight + Spacing.lg,
-            paddingBottom: tabBarHeight + Spacing.lg,
+            paddingTop: headerHeight + Spacing.xl,
+            paddingBottom: tabBarHeight + Spacing.xl,
           },
         ]}
         scrollIndicatorInsets={{ bottom: insets.bottom }}
@@ -173,8 +170,8 @@ export default function OrderHistoryScreen() {
       >
         {orders.length === 0 ? (
           <View style={styles.emptyState}>
-            <View style={[styles.emptyIcon, { backgroundColor: Colors.light.surface1 }]}>
-              <Feather name="shopping-bag" size={48} color={Colors.light.textSecondary} />
+            <View style={styles.emptyIcon}>
+              <Feather name="shopping-bag" size={48} color={Colors.light.textMuted} />
             </View>
             <ThemedText style={styles.emptyTitle}>No Orders Yet</ThemedText>
             <ThemedText style={styles.emptySubtitle}>
@@ -204,7 +201,7 @@ const styles = StyleSheet.create({
     color: Colors.light.textSecondary,
     textTransform: "uppercase",
     letterSpacing: 0.5,
-    marginBottom: Spacing.md,
+    marginBottom: Spacing.lg,
   },
   emptyState: {
     flex: 1,
@@ -216,13 +213,16 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
+    backgroundColor: Colors.light.surface1,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: Spacing.xl,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
   },
   emptyTitle: {
     ...Typography.h2,
-    color: Colors.light.white,
+    color: Colors.light.text,
     marginBottom: Spacing.sm,
   },
   emptySubtitle: {
@@ -233,8 +233,13 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.lg,
     padding: Spacing.lg,
     marginBottom: Spacing.md,
+    backgroundColor: Colors.light.surface1,
     borderWidth: 1,
     borderColor: Colors.light.border,
+    ...Shadows.card,
+  },
+  orderCardPressed: {
+    backgroundColor: Colors.light.surface2,
   },
   orderHeader: {
     flexDirection: "row",
@@ -272,6 +277,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
+    backgroundColor: Colors.light.surface2,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -282,7 +288,7 @@ const styles = StyleSheet.create({
   },
   vendorName: {
     ...Typography.caption,
-    color: Colors.light.white,
+    color: Colors.light.text,
   },
   orderTotal: {
     ...Typography.bodyBold,
@@ -292,6 +298,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.md,
     paddingTop: Spacing.md,
     borderTopWidth: 1,
+    borderTopColor: Colors.light.border,
   },
   detailRow: {
     flexDirection: "row",
@@ -307,6 +314,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
     padding: Spacing.md,
     borderRadius: BorderRadius.sm,
+    backgroundColor: Colors.light.surface2,
     gap: Spacing.xs,
   },
   itemRow: {
@@ -315,7 +323,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     ...Typography.caption,
-    color: Colors.light.white,
+    color: Colors.light.text,
   },
   itemPrice: {
     ...Typography.captionBold,

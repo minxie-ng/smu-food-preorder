@@ -2,31 +2,31 @@ import React from "react";
 import { View, ScrollView, Pressable, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useTheme } from "@/hooks/useTheme";
 import { Colors, Spacing, BorderRadius, Shadows, Typography } from "@/constants/theme";
-import { useApp } from "@/context/AppContext";
 import { MenuItem } from "@/data/mockData";
+import { useApp } from "@/context/AppContext";
 import { OrderStackParamList } from "@/navigation/OrderStackNavigator";
 
 type NavigationProp = NativeStackNavigationProp<OrderStackParamList, "VendorMenu">;
 
 export default function VendorMenuScreen() {
   const navigation = useNavigation<NavigationProp>();
-  const { selectedVendor, addToCart, removeFromCart, getItemQuantity, getCartTotal, getCartItemCount } =
-    useApp();
-  const { theme } = useTheme();
+  const {
+    selectedVendor,
+    cart,
+    addToCart,
+    removeFromCart,
+    getItemQuantity,
+  } = useApp();
   const headerHeight = useHeaderHeight();
-  const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
-
-  const cartTotal = getCartTotal();
-  const cartItemCount = getCartItemCount();
+  const insets = useSafeAreaInsets();
 
   if (!selectedVendor) {
     return (
@@ -40,11 +40,17 @@ export default function VendorMenuScreen() {
     navigation.navigate("Checkout");
   };
 
+  const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const cartTotal = cart.reduce(
+    (sum, item) => sum + item.menuItem.price * item.quantity,
+    0
+  );
+
   const renderMenuItem = (item: MenuItem) => {
     const quantity = getItemQuantity(item.id);
 
     return (
-      <View key={item.id} style={[styles.menuItem, { backgroundColor: Colors.light.surface1 }]}>
+      <View key={item.id} style={styles.menuItem}>
         <View style={styles.itemInfo}>
           <ThemedText style={styles.itemName}>{item.name}</ThemedText>
           <ThemedText style={styles.itemDescription}>
@@ -60,18 +66,15 @@ export default function VendorMenuScreen() {
             disabled={quantity === 0}
             style={({ pressed }) => [
               styles.quantityButton,
-              { 
-                backgroundColor: quantity === 0 ? Colors.light.surface2 : Colors.light.surface3,
-                borderColor: Colors.light.border,
-              },
+              styles.minusButton,
               quantity === 0 && styles.quantityButtonDisabled,
-              pressed && quantity > 0 && { backgroundColor: Colors.light.backgroundElevated },
+              pressed && quantity > 0 && { backgroundColor: Colors.light.borderDark },
             ]}
           >
             <Feather 
               name="minus" 
               size={18} 
-              color={quantity === 0 ? Colors.light.textMuted : Colors.light.white} 
+              color={quantity === 0 ? Colors.light.textMuted : Colors.light.text} 
             />
           </Pressable>
           <View style={styles.quantityDisplay}>
@@ -81,10 +84,7 @@ export default function VendorMenuScreen() {
             onPress={() => addToCart(item)}
             style={({ pressed }) => [
               styles.quantityButton,
-              { 
-                backgroundColor: Colors.light.primary,
-                borderColor: Colors.light.primary,
-              },
+              styles.plusButton,
               pressed && { backgroundColor: Colors.light.primaryDark },
             ]}
           >
@@ -96,19 +96,19 @@ export default function VendorMenuScreen() {
   };
 
   return (
-    <ThemedView style={[styles.container, { backgroundColor: Colors.light.backgroundRoot }]}>
+    <ThemedView style={[styles.container, { backgroundColor: Colors.light.background }]}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
           {
-            paddingTop: headerHeight + Spacing.lg,
-            paddingBottom: cartItemCount > 0 ? 140 + tabBarHeight : tabBarHeight + Spacing.lg,
+            paddingTop: headerHeight + Spacing.xl,
+            paddingBottom: cartItemCount > 0 ? 140 + tabBarHeight : tabBarHeight + Spacing.xl,
           },
         ]}
         scrollIndicatorInsets={{ bottom: insets.bottom }}
         showsVerticalScrollIndicator={false}
       >
-        <View style={[styles.vendorInfoBar, { backgroundColor: Colors.light.surface1 }]}>
+        <View style={styles.vendorInfoBar}>
           <View style={styles.infoItem}>
             <Feather name="map-pin" size={14} color={Colors.light.textSecondary} />
             <ThemedText style={styles.infoText}>
@@ -126,32 +126,31 @@ export default function VendorMenuScreen() {
 
         <ThemedText style={styles.sectionTitle}>Menu</ThemedText>
 
-        {selectedVendor.menuItems.map(renderMenuItem)}
+        <View style={styles.menuList}>
+          {selectedVendor.menuItems.map(renderMenuItem)}
+        </View>
       </ScrollView>
 
       {cartItemCount > 0 ? (
-        <View style={[styles.cartBar, { backgroundColor: Colors.light.surface2, bottom: tabBarHeight }]}>
-          <View style={styles.cartSummary}>
-            <View style={styles.cartInfo}>
-              <View style={[styles.cartBadge, { backgroundColor: Colors.light.primary }]}>
-                <ThemedText style={styles.cartBadgeText}>{cartItemCount}</ThemedText>
-              </View>
-              <ThemedText style={styles.cartLabel}>
-                {cartItemCount === 1 ? "item" : "items"} in cart
-              </ThemedText>
+        <View style={[styles.cartBar, { bottom: tabBarHeight }]}>
+          <View style={styles.cartInfo}>
+            <View style={styles.cartBadge}>
+              <ThemedText style={styles.cartBadgeText}>{cartItemCount}</ThemedText>
             </View>
-            <ThemedText style={styles.cartTotal}>${cartTotal.toFixed(2)}</ThemedText>
+            <View style={styles.cartDetails}>
+              <ThemedText style={styles.cartLabel}>Your Order</ThemedText>
+              <ThemedText style={styles.cartTotal}>${cartTotal.toFixed(2)}</ThemedText>
+            </View>
           </View>
           <Pressable
             onPress={handleContinue}
             style={({ pressed }) => [
               styles.continueButton,
-              { backgroundColor: Colors.light.primary },
               pressed && { backgroundColor: Colors.light.primaryDark },
             ]}
           >
-            <ThemedText style={styles.continueButtonText}>Continue to Checkout</ThemedText>
-            <Feather name="arrow-right" size={20} color={Colors.light.white} />
+            <ThemedText style={styles.continueButtonText}>Continue</ThemedText>
+            <Feather name="arrow-right" size={18} color={Colors.light.white} />
           </Pressable>
         </View>
       ) : null}
@@ -165,19 +164,28 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.xl,
   },
   vendorInfoBar: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    padding: Spacing.md,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    backgroundColor: Colors.light.surface1,
     borderRadius: BorderRadius.md,
     marginBottom: Spacing.xl,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
   },
   infoItem: {
     flexDirection: "row",
     alignItems: "center",
     gap: Spacing.xs,
+  },
+  infoText: {
+    ...Typography.caption,
+    color: Colors.light.textSecondary,
   },
   infoDivider: {
     width: 1,
@@ -185,38 +193,39 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.border,
     marginHorizontal: Spacing.lg,
   },
-  infoText: {
-    fontSize: 13,
-    color: Colors.light.textSecondary,
-  },
   sectionTitle: {
-    ...Typography.h2,
-    color: Colors.light.white,
+    ...Typography.smallBold,
+    color: Colors.light.textSecondary,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
     marginBottom: Spacing.lg,
+  },
+  menuList: {
+    gap: Spacing.md,
   },
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
     padding: Spacing.lg,
+    backgroundColor: Colors.light.surface1,
     borderRadius: BorderRadius.lg,
-    marginBottom: Spacing.md,
     borderWidth: 1,
     borderColor: Colors.light.border,
+    ...Shadows.card,
   },
   itemInfo: {
     flex: 1,
-    marginRight: Spacing.lg,
+    marginRight: Spacing.md,
   },
   itemName: {
     ...Typography.bodyBold,
-    color: Colors.light.white,
+    color: Colors.light.text,
     marginBottom: Spacing.xs,
   },
   itemDescription: {
     ...Typography.small,
     color: Colors.light.textSecondary,
     marginBottom: Spacing.sm,
-    lineHeight: 18,
   },
   itemPrice: {
     ...Typography.bodyBold,
@@ -228,48 +237,53 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   quantityButton: {
-    width: Spacing.minTouchTarget,
-    height: Spacing.minTouchTarget,
+    width: 44,
+    height: 44,
     borderRadius: BorderRadius.sm,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
+  minusButton: {
+    backgroundColor: Colors.light.surface2,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
+  },
+  plusButton: {
+    backgroundColor: Colors.light.primary,
+  },
   quantityButtonDisabled: {
-    opacity: 0.6,
+    opacity: 0.5,
   },
   quantityDisplay: {
-    minWidth: 32,
+    width: 32,
     alignItems: "center",
   },
   quantityText: {
     ...Typography.bodyBold,
-    color: Colors.light.white,
+    color: Colors.light.text,
   },
   cartBar: {
     position: "absolute",
-    left: 0,
-    right: 0,
+    left: Spacing.lg,
+    right: Spacing.lg,
+    backgroundColor: Colors.light.navy,
+    borderRadius: BorderRadius.lg,
     padding: Spacing.lg,
-    borderTopWidth: 1,
-    borderTopColor: Colors.light.border,
-    ...Shadows.elevated,
-  },
-  cartSummary: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: Spacing.md,
+    justifyContent: "space-between",
+    ...Shadows.elevated,
   },
   cartInfo: {
     flexDirection: "row",
     alignItems: "center",
-    gap: Spacing.sm,
+    gap: Spacing.md,
   },
   cartBadge: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: Colors.light.primary,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -277,24 +291,29 @@ const styles = StyleSheet.create({
     ...Typography.smallBold,
     color: Colors.light.white,
   },
+  cartDetails: {
+    gap: 2,
+  },
   cartLabel: {
-    ...Typography.caption,
-    color: Colors.light.textSecondary,
+    ...Typography.small,
+    color: Colors.light.white,
+    opacity: 0.8,
   },
   cartTotal: {
-    ...Typography.h3,
+    ...Typography.bodyBold,
     color: Colors.light.white,
   },
   continueButton: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    height: Spacing.buttonHeight,
-    borderRadius: BorderRadius.md,
     gap: Spacing.sm,
+    backgroundColor: Colors.light.primary,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: BorderRadius.sm,
   },
   continueButtonText: {
-    ...Typography.bodyBold,
+    ...Typography.captionBold,
     color: Colors.light.white,
   },
 });

@@ -23,12 +23,11 @@ export default function MainTabNavigator() {
       initialRouteName="OrderTab"
       screenOptions={{
         tabBarActiveTintColor: Colors.light.primary,
-        tabBarInactiveTintColor: Colors.light.tabIconDefault,
+        tabBarInactiveTintColor: Colors.light.white,
         tabBarStyle: {
           position: "absolute",
-          backgroundColor: Colors.light.surface1,
-          borderTopWidth: 1,
-          borderTopColor: Colors.light.border,
+          backgroundColor: Colors.light.navy,
+          borderTopWidth: 0,
           elevation: 0,
           height: 60,
         },

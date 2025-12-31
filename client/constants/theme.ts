@@ -1,61 +1,77 @@
-import { Platform } from "react-native";
-
 export const Colors = {
   light: {
-    text: "#FFFFFF",
-    textSecondary: "rgba(255, 255, 255, 0.65)",
-    textMuted: "rgba(255, 255, 255, 0.45)",
-    buttonText: "#FFFFFF",
-    tabIconDefault: "rgba(255, 255, 255, 0.5)",
-    tabIconSelected: "#8A704C",
-    link: "#8A704C",
-    primary: "#8A704C",
-    primaryDark: "#6B5A3E",
-    primaryLight: "rgba(138, 112, 76, 0.15)",
-    secondary: "#151C55",
-    success: "#4ADE80",
-    successLight: "rgba(74, 222, 128, 0.15)",
+    // SMU Brand Colors (anchors)
+    primary: "#8A704C",        // SMU Gold - CTAs, highlights, key info
+    primaryDark: "#6B5A3E",    // Darker gold for pressed states
+    primaryLight: "rgba(138, 112, 76, 0.12)", // Gold tint for badges
+
+    // Navy - Used ONLY for navigation bars and page background
+    navy: "#151C55",           // SMU Navy - nav bars, tab bars, page bg
+    navyLight: "#1E2766",      // Slightly lighter navy for subtle variation
+
+    // Lighter Surfaces (derived from navy, but much lighter for cards/inputs)
+    // These create a calm, welcoming feel while maintaining brand connection
+    background: "#F5F6FA",     // Very light blue-grey page background
+    surface1: "#FFFFFF",       // White cards - primary content containers
+    surface2: "#F0F1F7",       // Light grey-blue for inputs, inner sections
+    surface3: "#E8EAF2",       // Slightly darker for toggles, secondary areas
+
+    // Text Colors
+    text: "#1A1D3D",           // Near-black with navy tint for body text
+    textSecondary: "#5A5F7A",  // Medium grey for secondary text
+    textMuted: "#8B8FA6",      // Light grey for placeholders, hints
+    white: "#FFFFFF",          // White text on dark surfaces
+
+    // Semantic Colors
+    success: "#22C55E",
+    successLight: "rgba(34, 197, 94, 0.12)",
     error: "#EF4444",
-    errorLight: "rgba(239, 68, 68, 0.15)",
-    backgroundRoot: "#0A0E2E",
-    backgroundDefault: "#0F1340",
-    backgroundSecondary: "#151C55",
-    backgroundTertiary: "#1E2668",
-    backgroundElevated: "#252F7A",
-    surface1: "#1A2258",
-    surface2: "#222B6B",
-    surface3: "#2A357D",
-    border: "rgba(255, 255, 255, 0.1)",
-    borderLight: "rgba(255, 255, 255, 0.06)",
-    white: "#FFFFFF",
+    errorLight: "rgba(239, 68, 68, 0.12)",
+
+    // Borders
+    border: "#E2E4ED",         // Light border for cards
+    borderDark: "#D1D4E0",     // Slightly darker border for emphasis
+
+    // Tab/Navigation specific
+    tabIconDefault: "#8B8FA6",
+    tabIconSelected: "#8A704C", // Gold for selected tab
+
+    // Legacy aliases for compatibility
+    backgroundRoot: "#F5F6FA",
+    backgroundElevated: "#FFFFFF",
   },
   dark: {
-    text: "#FFFFFF",
-    textSecondary: "rgba(255, 255, 255, 0.65)",
-    textMuted: "rgba(255, 255, 255, 0.45)",
-    buttonText: "#FFFFFF",
-    tabIconDefault: "rgba(255, 255, 255, 0.5)",
-    tabIconSelected: "#8A704C",
-    link: "#8A704C",
+    // Dark mode keeps the current darker theme
     primary: "#8A704C",
     primaryDark: "#6B5A3E",
     primaryLight: "rgba(138, 112, 76, 0.15)",
-    secondary: "#151C55",
+
+    navy: "#151C55",
+    navyLight: "#1E2766",
+
+    background: "#0F1340",
+    surface1: "#1A2258",
+    surface2: "#222B6B",
+    surface3: "#2A357D",
+
+    text: "#FFFFFF",
+    textSecondary: "rgba(255, 255, 255, 0.65)",
+    textMuted: "rgba(255, 255, 255, 0.45)",
+    white: "#FFFFFF",
+
     success: "#4ADE80",
     successLight: "rgba(74, 222, 128, 0.15)",
     error: "#EF4444",
     errorLight: "rgba(239, 68, 68, 0.15)",
-    backgroundRoot: "#0A0E2E",
-    backgroundDefault: "#0F1340",
-    backgroundSecondary: "#151C55",
-    backgroundTertiary: "#1E2668",
-    backgroundElevated: "#252F7A",
-    surface1: "#1A2258",
-    surface2: "#222B6B",
-    surface3: "#2A357D",
+
     border: "rgba(255, 255, 255, 0.1)",
-    borderLight: "rgba(255, 255, 255, 0.06)",
-    white: "#FFFFFF",
+    borderDark: "rgba(255, 255, 255, 0.15)",
+
+    tabIconDefault: "rgba(255, 255, 255, 0.5)",
+    tabIconSelected: "#8A704C",
+
+    backgroundRoot: "#0A0E2E",
+    backgroundElevated: "#1A2258",
   },
 };
 
@@ -68,9 +84,6 @@ export const Spacing = {
   "2xl": 32,
   "3xl": 40,
   "4xl": 48,
-  inputHeight: 48,
-  buttonHeight: 52,
-  minTouchTarget: 44,
 };
 
 export const BorderRadius = {
@@ -125,45 +138,17 @@ export const Typography = {
 
 export const Shadows = {
   card: {
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  cardSubtle: {
-    shadowColor: "#000",
+    shadowColor: "#1A1D3D",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.06,
     shadowRadius: 8,
     elevation: 2,
   },
   elevated: {
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 16,
-    elevation: 8,
+    shadowColor: "#1A1D3D",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
   },
 };
-
-export const Fonts = Platform.select({
-  ios: {
-    sans: "system-ui",
-    serif: "ui-serif",
-    rounded: "ui-rounded",
-    mono: "ui-monospace",
-  },
-  default: {
-    sans: "normal",
-    serif: "serif",
-    rounded: "normal",
-    mono: "monospace",
-  },
-  web: {
-    sans: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-    serif: "Georgia, 'Times New Roman', serif",
-    rounded: "'SF Pro Rounded', sans-serif",
-    mono: "SFMono-Regular, Menlo, Monaco, monospace",
-  },
-});
