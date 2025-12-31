@@ -13,7 +13,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors, Spacing, BorderRadius, Shadows, Typography } from "@/constants/theme";
@@ -154,7 +154,7 @@ export default function CheckoutScreen() {
           
           <View style={styles.toggleRow}>
             <View style={styles.toggleInfo}>
-              <Feather name="package" size={20} color={Colors.light.textSecondary} />
+              <Feather name="shopping-bag" size={20} color={Colors.light.textSecondary} />
               <ThemedText style={styles.toggleLabel}>Take Out</ThemedText>
             </View>
             <Switch
@@ -169,7 +169,7 @@ export default function CheckoutScreen() {
 
           <View style={styles.toggleRow}>
             <View style={styles.toggleInfo}>
-              <Feather name="edit-3" size={20} color={Colors.light.textSecondary} />
+              <MaterialCommunityIcons name="silverware-fork-knife" size={20} color={Colors.light.textSecondary} />
               <ThemedText style={styles.toggleLabel}>Include Cutlery</ThemedText>
             </View>
             <Switch
