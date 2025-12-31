@@ -3,6 +3,7 @@ import { View, ScrollView, Pressable, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
@@ -22,6 +23,7 @@ export default function VendorMenuScreen() {
   const { theme } = useTheme();
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
+  const tabBarHeight = useBottomTabBarHeight();
 
   const cartTotal = getCartTotal();
   const cartItemCount = getCartItemCount();
@@ -88,7 +90,7 @@ export default function VendorMenuScreen() {
           styles.scrollContent,
           {
             paddingTop: headerHeight + Spacing.lg,
-            paddingBottom: cartItemCount > 0 ? 100 + insets.bottom : insets.bottom + Spacing.lg,
+            paddingBottom: cartItemCount > 0 ? 120 + tabBarHeight : tabBarHeight + Spacing.lg,
           },
         ]}
         scrollIndicatorInsets={{ bottom: insets.bottom }}
@@ -115,7 +117,7 @@ export default function VendorMenuScreen() {
       </ScrollView>
 
       {cartItemCount > 0 ? (
-        <View style={[styles.cartBar, { backgroundColor: theme.backgroundDefault, paddingBottom: insets.bottom + Spacing.lg }]}>
+        <View style={[styles.cartBar, { backgroundColor: theme.backgroundDefault, bottom: tabBarHeight }]}>
           <View style={styles.cartSummary}>
             <ThemedText style={styles.cartItemCount}>
               {cartItemCount} {cartItemCount === 1 ? "item" : "items"}
@@ -214,10 +216,10 @@ const styles = StyleSheet.create({
   },
   cartBar: {
     position: "absolute",
-    bottom: 0,
     left: 0,
     right: 0,
     padding: Spacing.lg,
+    paddingBottom: Spacing.md,
     zIndex: 100,
     ...Shadows.card,
   },
