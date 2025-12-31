@@ -28,6 +28,9 @@ export interface Order {
   total: number;
   status: "Pending" | "Ready" | "Picked Up" | "Completed";
   createdAt: Date;
+  needsCutlery: boolean;
+  orderNote: string;
+  takeOut: boolean;
 }
 
 export const vendors: Vendor[] = [
@@ -146,7 +149,7 @@ export function generateOrderNumber(): string {
 }
 
 export function generateTimeSlots(): string[] {
-  const slots: string[] = [];
+  const slots: string[] = ["Now"];
   const now = new Date();
   const currentHour = now.getHours();
   const currentMinute = now.getMinutes();
@@ -154,11 +157,7 @@ export function generateTimeSlots(): string[] {
   for (let hour = 11; hour <= 20; hour++) {
     for (let minute = 0; minute < 60; minute += 30) {
       if (hour > currentHour || (hour === currentHour && minute > currentMinute + 15)) {
-        const startTime = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
-        const endMinute = minute + 30;
-        const endHour = endMinute >= 60 ? hour + 1 : hour;
-        const endTime = `${endHour.toString().padStart(2, "0")}:${(endMinute % 60).toString().padStart(2, "0")}`;
-        slots.push(`${formatTime(hour, minute)} - ${formatTime(endHour, endMinute % 60)}`);
+        slots.push(formatTime(hour, minute));
       }
     }
   }

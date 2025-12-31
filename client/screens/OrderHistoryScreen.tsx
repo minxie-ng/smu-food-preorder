@@ -32,9 +32,9 @@ export default function OrderHistoryScreen() {
   const getStatusColor = (status: Order["status"]) => {
     switch (status) {
       case "Pending":
-        return Colors.light.secondary;
-      case "Ready":
         return Colors.light.primary;
+      case "Ready":
+        return Colors.light.secondary;
       case "Picked Up":
       case "Completed":
         return Colors.light.success;
@@ -62,7 +62,9 @@ export default function OrderHistoryScreen() {
       >
         <View style={styles.orderHeader}>
           <View style={styles.orderHeaderLeft}>
-            <ThemedText style={styles.orderNumber}>{order.orderNumber}</ThemedText>
+            <ThemedText style={[styles.orderNumber, { color: Colors.light.primary }]}>
+              {order.orderNumber}
+            </ThemedText>
             <ThemedText style={[styles.orderDate, { color: theme.textSecondary }]}>
               {formatDate(order.createdAt)}
             </ThemedText>
@@ -102,6 +104,26 @@ export default function OrderHistoryScreen() {
                 Pickup: {order.pickupTime}
               </ThemedText>
             </View>
+            <View style={styles.detailRow}>
+              <Feather name="package" size={14} color={theme.textSecondary} />
+              <ThemedText style={[styles.detailText, { color: theme.textSecondary }]}>
+                {order.takeOut ? "Take Out" : "Dine In"}
+              </ThemedText>
+            </View>
+            <View style={styles.detailRow}>
+              <Feather name="coffee" size={14} color={theme.textSecondary} />
+              <ThemedText style={[styles.detailText, { color: theme.textSecondary }]}>
+                {order.needsCutlery ? "Cutlery Included" : "No Cutlery"}
+              </ThemedText>
+            </View>
+            {order.orderNote ? (
+              <View style={styles.detailRow}>
+                <Feather name="file-text" size={14} color={theme.textSecondary} />
+                <ThemedText style={[styles.detailText, { color: theme.textSecondary }]}>
+                  Note: {order.orderNote}
+                </ThemedText>
+              </View>
+            ) : null}
             <View style={styles.itemsList}>
               {order.items.map((item) => (
                 <View key={item.menuItem.id} style={styles.itemRow}>

@@ -6,6 +6,10 @@ interface AppState {
   cart: OrderItem[];
   orders: Order[];
   currentOrder: Order | null;
+  needsCutlery: boolean;
+  orderNote: string;
+  takeOut: boolean;
+  pickupTime: string | null;
 }
 
 interface AppContextType extends AppState {
@@ -16,7 +20,11 @@ interface AppContextType extends AppState {
   getCartTotal: () => number;
   getCartItemCount: () => number;
   clearCart: () => void;
-  placeOrder: (pickupTime: string) => Order;
+  setNeedsCutlery: (value: boolean) => void;
+  setOrderNote: (note: string) => void;
+  setTakeOut: (value: boolean) => void;
+  setPickupTime: (time: string) => void;
+  placeOrder: () => Order;
   clearCurrentOrder: () => void;
 }
 
@@ -28,6 +36,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     cart: [],
     orders: [],
     currentOrder: null,
+    needsCutlery: true,
+    orderNote: "",
+    takeOut: false,
+    pickupTime: null,
   });
 
   const selectVendor = useCallback((vendor: Vendor) => {
@@ -35,6 +47,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       ...prev,
       selectedVendor: vendor,
       cart: [],
+      needsCutlery: true,
+      orderNote: "",
+      takeOut: false,
+      pickupTime: null,
     }));
   }, []);
 
@@ -89,34 +105,62 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [state.cart]);
 
   const clearCart = useCallback(() => {
-    setState((prev) => ({ ...prev, cart: [], selectedVendor: null }));
+    setState((prev) => ({
+      ...prev,
+      cart: [],
+      selectedVendor: null,
+      needsCutlery: true,
+      orderNote: "",
+      takeOut: false,
+      pickupTime: null,
+    }));
   }, []);
 
-  const placeOrder = useCallback(
-    (pickupTime: string): Order => {
-      const order: Order = {
-        id: Date.now().toString(),
-        orderNumber: generateOrderNumber(),
-        vendor: state.selectedVendor!,
-        items: [...state.cart],
-        pickupTime,
-        total: getCartTotal(),
-        status: "Pending",
-        createdAt: new Date(),
-      };
+  const setNeedsCutlery = useCallback((value: boolean) => {
+    setState((prev) => ({ ...prev, needsCutlery: value }));
+  }, []);
 
-      setState((prev) => ({
-        ...prev,
-        orders: [order, ...prev.orders],
-        currentOrder: order,
-        cart: [],
-        selectedVendor: null,
-      }));
+  const setOrderNote = useCallback((note: string) => {
+    setState((prev) => ({ ...prev, orderNote: note }));
+  }, []);
 
-      return order;
-    },
-    [state.selectedVendor, state.cart, getCartTotal]
-  );
+  const setTakeOut = useCallback((value: boolean) => {
+    setState((prev) => ({ ...prev, takeOut: value }));
+  }, []);
+
+  const setPickupTime = useCallback((time: string) => {
+    setState((prev) => ({ ...prev, pickupTime: time }));
+  }, []);
+
+  const placeOrder = useCallback((): Order => {
+    const order: Order = {
+      id: Date.now().toString(),
+      orderNumber: generateOrderNumber(),
+      vendor: state.selectedVendor!,
+      items: [...state.cart],
+      pickupTime: state.pickupTime || "Now",
+      total: getCartTotal(),
+      status: "Pending",
+      createdAt: new Date(),
+      needsCutlery: state.needsCutlery,
+      orderNote: state.orderNote,
+      takeOut: state.takeOut,
+    };
+
+    setState((prev) => ({
+      ...prev,
+      orders: [order, ...prev.orders],
+      currentOrder: order,
+      cart: [],
+      selectedVendor: null,
+      needsCutlery: true,
+      orderNote: "",
+      takeOut: false,
+      pickupTime: null,
+    }));
+
+    return order;
+  }, [state.selectedVendor, state.cart, state.pickupTime, state.needsCutlery, state.orderNote, state.takeOut, getCartTotal]);
 
   const clearCurrentOrder = useCallback(() => {
     setState((prev) => ({ ...prev, currentOrder: null }));
@@ -133,6 +177,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         getCartTotal,
         getCartItemCount,
         clearCart,
+        setNeedsCutlery,
+        setOrderNote,
+        setTakeOut,
+        setPickupTime,
         placeOrder,
         clearCurrentOrder,
       }}

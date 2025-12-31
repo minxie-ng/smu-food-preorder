@@ -35,7 +35,7 @@ export default function VendorMenuScreen() {
   }
 
   const handleContinue = () => {
-    navigation.navigate("PickupTime");
+    navigation.navigate("Checkout");
   };
 
   const renderMenuItem = (item: MenuItem) => {
@@ -130,7 +130,7 @@ export default function VendorMenuScreen() {
               pressed && { backgroundColor: Colors.light.primaryDark },
             ]}
           >
-            <ThemedText style={styles.continueButtonText}>Continue to Pickup Time</ThemedText>
+            <ThemedText style={styles.continueButtonText}>Continue to Checkout</ThemedText>
             <Feather name="arrow-right" size={18} color="#FFFFFF" />
           </Pressable>
         </View>

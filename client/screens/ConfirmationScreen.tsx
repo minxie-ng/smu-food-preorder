@@ -70,13 +70,16 @@ export default function ConfirmationScreen() {
           </View>
           <ThemedText style={styles.successTitle}>Order Confirmed!</ThemedText>
           <ThemedText style={[styles.successSubtitle, { color: theme.textSecondary }]}>
-            Your order has been placed successfully
+            Show this number when collecting your order
           </ThemedText>
         </View>
 
         <View style={[styles.orderNumberCard, { backgroundColor: Colors.light.primary }]}>
-          <ThemedText style={styles.orderNumberLabel}>Order Number</ThemedText>
+          <ThemedText style={styles.orderNumberLabel}>Your Order Number</ThemedText>
           <ThemedText style={styles.orderNumber}>{currentOrder.orderNumber}</ThemedText>
+          <ThemedText style={styles.collectionNote}>
+            Please show this to the staff when collecting
+          </ThemedText>
         </View>
 
         <View style={[styles.orderDetails, { backgroundColor: theme.backgroundDefault }]}>
@@ -103,9 +106,41 @@ export default function ConfirmationScreen() {
             </View>
             <View style={styles.detailContent}>
               <ThemedText style={[styles.detailLabel, { color: theme.textSecondary }]}>
-                Pickup Time
+                Collection Time
               </ThemedText>
               <ThemedText style={styles.detailValue}>{currentOrder.pickupTime}</ThemedText>
+            </View>
+          </View>
+
+          <View style={[styles.divider, { backgroundColor: theme.border }]} />
+
+          <View style={styles.detailRow}>
+            <View style={styles.detailIconContainer}>
+              <Feather name="package" size={18} color={Colors.light.primary} />
+            </View>
+            <View style={styles.detailContent}>
+              <ThemedText style={[styles.detailLabel, { color: theme.textSecondary }]}>
+                Order Type
+              </ThemedText>
+              <ThemedText style={styles.detailValue}>
+                {currentOrder.takeOut ? "Take Out" : "Dine In / Self-Collect"}
+              </ThemedText>
+            </View>
+          </View>
+
+          <View style={[styles.divider, { backgroundColor: theme.border }]} />
+
+          <View style={styles.detailRow}>
+            <View style={styles.detailIconContainer}>
+              <Feather name="coffee" size={18} color={Colors.light.primary} />
+            </View>
+            <View style={styles.detailContent}>
+              <ThemedText style={[styles.detailLabel, { color: theme.textSecondary }]}>
+                Cutlery
+              </ThemedText>
+              <ThemedText style={styles.detailValue}>
+                {currentOrder.needsCutlery ? "Cutlery Included" : "No Cutlery"}
+              </ThemedText>
             </View>
           </View>
 
@@ -131,6 +166,23 @@ export default function ConfirmationScreen() {
               ))}
             </View>
           </View>
+
+          {currentOrder.orderNote ? (
+            <>
+              <View style={[styles.divider, { backgroundColor: theme.border }]} />
+              <View style={styles.detailRow}>
+                <View style={styles.detailIconContainer}>
+                  <Feather name="file-text" size={18} color={Colors.light.primary} />
+                </View>
+                <View style={styles.detailContent}>
+                  <ThemedText style={[styles.detailLabel, { color: theme.textSecondary }]}>
+                    Order Note
+                  </ThemedText>
+                  <ThemedText style={styles.detailValue}>{currentOrder.orderNote}</ThemedText>
+                </View>
+              </View>
+            </>
+          ) : null}
 
           <View style={[styles.totalRow, { borderTopColor: theme.border }]}>
             <ThemedText style={styles.totalLabel}>Total</ThemedText>
@@ -197,6 +249,7 @@ const styles = StyleSheet.create({
   },
   successSubtitle: {
     fontSize: 14,
+    textAlign: "center",
   },
   orderNumberCard: {
     alignItems: "center",
@@ -205,16 +258,21 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
   },
   orderNumberLabel: {
-    color: "#FFFFFF",
+    color: "rgba(255,255,255,0.8)",
     fontSize: 14,
-    opacity: 0.9,
     marginBottom: Spacing.xs,
   },
   orderNumber: {
     color: "#FFFFFF",
-    fontSize: 32,
+    fontSize: 40,
     fontWeight: "700",
-    letterSpacing: 2,
+    letterSpacing: 3,
+    marginBottom: Spacing.sm,
+  },
+  collectionNote: {
+    color: "rgba(255,255,255,0.7)",
+    fontSize: 12,
+    textAlign: "center",
   },
   orderDetails: {
     borderRadius: BorderRadius.md,

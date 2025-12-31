@@ -2,7 +2,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import VendorListScreen from "@/screens/VendorListScreen";
 import VendorMenuScreen from "@/screens/VendorMenuScreen";
-import PickupTimeScreen from "@/screens/PickupTimeScreen";
+import CheckoutScreen from "@/screens/CheckoutScreen";
 import ConfirmationScreen from "@/screens/ConfirmationScreen";
 import { useScreenOptions } from "@/hooks/useScreenOptions";
 import HeaderTitle from "@/components/HeaderTitle";
@@ -10,7 +10,7 @@ import HeaderTitle from "@/components/HeaderTitle";
 export type OrderStackParamList = {
   VendorList: undefined;
   VendorMenu: undefined;
-  PickupTime: undefined;
+  Checkout: undefined;
   Confirmation: undefined;
 };
 
@@ -31,16 +31,16 @@ export default function OrderStackNavigator() {
       <Stack.Screen
         name="VendorMenu"
         component={VendorMenuScreen}
-        options={({ route, navigation }) => ({
+        options={{
           headerTitle: "Menu",
           headerBackTitle: "Back",
-        })}
+        }}
       />
       <Stack.Screen
-        name="PickupTime"
-        component={PickupTimeScreen}
+        name="Checkout"
+        component={CheckoutScreen}
         options={{
-          headerTitle: "Pickup Time",
+          headerTitle: "Your Order",
           headerBackTitle: "Back",
         }}
       />
