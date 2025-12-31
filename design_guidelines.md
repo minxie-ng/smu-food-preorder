@@ -98,16 +98,18 @@
 ## Design System
 
 ### Color Palette
-- **Primary**: `#FF6B35` (vibrant orange - food/appetite stimulating)
-- **Primary Dark**: `#E55A2B` (pressed state)
-- **Secondary**: `#4ECDC4` (teal - modern, clean)
+- **Primary**: `#8A704C` (gold/bronze accent - premium feel)
+- **Primary Dark**: `#6B5A3E` (pressed state)
+- **Secondary**: `#151C55` (dark navy blue - main background)
 - **Success**: `#2ECC71` (green)
 - **Error/Booked**: `#E74C3C` (red)
-- **Background**: `#F8F9FA` (light gray)
-- **Surface**: `#FFFFFF` (white cards)
-- **Text Primary**: `#2C3E50` (dark gray)
-- **Text Secondary**: `#7F8C8D` (medium gray)
-- **Border**: `#E0E0E0` (light border)
+- **Background Root**: `#0D1033` (deepest navy)
+- **Background Default**: `#151C55` (dark navy)
+- **Background Secondary**: `#1E2668` (lighter navy)
+- **Background Tertiary**: `#2A3278` (card surfaces)
+- **Text Primary**: `#ECEDEE` (light text on dark)
+- **Text Secondary**: `#9BA1A6` (muted text)
+- **Border**: `#2A3278` (subtle borders)
 
 ### Typography
 - **Font Family**: System font stack (`-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`)
