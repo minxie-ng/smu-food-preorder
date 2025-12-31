@@ -3,6 +3,7 @@ import { View, ScrollView, Pressable, StyleSheet, Switch, TextInput } from "reac
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
@@ -34,6 +35,7 @@ export default function CheckoutScreen() {
   const { theme } = useTheme();
   const headerHeight = useHeaderHeight();
   const insets = useSafeAreaInsets();
+  const tabBarHeight = useBottomTabBarHeight();
 
   const [showTimeSlots, setShowTimeSlots] = useState(false);
   const timeSlots = useMemo(() => generateTimeSlots(), []);
@@ -59,7 +61,7 @@ export default function CheckoutScreen() {
           styles.scrollContent,
           {
             paddingTop: headerHeight,
-            paddingBottom: 100 + insets.bottom,
+            paddingBottom: 80 + tabBarHeight,
           },
         ]}
         scrollIndicatorInsets={{ bottom: insets.bottom }}
@@ -99,7 +101,7 @@ export default function CheckoutScreen() {
 
         <View style={[styles.optionRow, { backgroundColor: theme.backgroundDefault }]}>
           <View style={styles.optionLeft}>
-            <Feather name="package" size={18} color={theme.text} />
+            <Feather name="shopping-bag" size={18} color={theme.text} />
             <ThemedText style={styles.optionLabel}>Take Out</ThemedText>
           </View>
           <Switch
@@ -112,8 +114,8 @@ export default function CheckoutScreen() {
 
         <View style={[styles.optionRow, { backgroundColor: theme.backgroundDefault }]}>
           <View style={styles.optionLeft}>
-            <Feather name="coffee" size={18} color={theme.text} />
-            <ThemedText style={styles.optionLabel}>Need Cutlery</ThemedText>
+            <Feather name="edit-3" size={18} color={theme.text} />
+            <ThemedText style={styles.optionLabel}>Cutlery</ThemedText>
           </View>
           <Switch
             value={needsCutlery}
@@ -205,7 +207,7 @@ export default function CheckoutScreen() {
       <View
         style={[
           styles.bottomBar,
-          { backgroundColor: theme.backgroundDefault, paddingBottom: Math.max(insets.bottom, Spacing.md) },
+          { backgroundColor: theme.backgroundDefault, bottom: tabBarHeight },
         ]}
       >
         <Pressable
@@ -348,10 +350,10 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     position: "absolute",
-    bottom: 0,
     left: 0,
     right: 0,
     padding: Spacing.lg,
+    paddingBottom: Spacing.md,
     zIndex: 100,
     ...Shadows.card,
   },
