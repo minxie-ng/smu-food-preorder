@@ -110,20 +110,17 @@ export default function CheckoutScreen() {
           />
         </View>
 
-        <View style={[styles.section, { backgroundColor: theme.backgroundDefault }]}>
-          <ThemedText style={styles.sectionTitle}>Choose Cutlery</ThemedText>
-          <Pressable
-            style={styles.optionSelectRow}
-            onPress={() => setNeedsCutlery(!needsCutlery)}
-          >
-            <ThemedText style={styles.optionSelectLabel}>Cutlery</ThemedText>
-            <View style={styles.optionSelectValue}>
-              <ThemedText style={[styles.optionSelectText, { color: Colors.light.primary }]}>
-                {needsCutlery ? "Need Cutlery" : "No Cutlery"}
-              </ThemedText>
-              <Feather name="chevron-right" size={18} color={theme.textSecondary} />
-            </View>
-          </Pressable>
+        <View style={[styles.optionRow, { backgroundColor: theme.backgroundDefault }]}>
+          <View style={styles.optionLeft}>
+            <Feather name="coffee" size={18} color={theme.text} />
+            <ThemedText style={styles.optionLabel}>Need Cutlery</ThemedText>
+          </View>
+          <Switch
+            value={needsCutlery}
+            onValueChange={setNeedsCutlery}
+            trackColor={{ false: theme.border, true: Colors.light.primary }}
+            thumbColor={theme.backgroundDefault}
+          />
         </View>
 
         <View style={[styles.section, { backgroundColor: theme.backgroundDefault }]}>
@@ -208,7 +205,7 @@ export default function CheckoutScreen() {
       <View
         style={[
           styles.bottomBar,
-          { backgroundColor: theme.backgroundDefault, paddingBottom: insets.bottom + Spacing.lg },
+          { backgroundColor: theme.backgroundDefault, paddingBottom: Math.max(insets.bottom, Spacing.md) },
         ]}
       >
         <Pressable
@@ -306,23 +303,6 @@ const styles = StyleSheet.create({
   },
   optionLabel: {
     fontSize: 16,
-  },
-  optionSelectRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: Spacing.sm,
-  },
-  optionSelectLabel: {
-    fontSize: 14,
-  },
-  optionSelectValue: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-  },
-  optionSelectText: {
-    fontSize: 14,
   },
   noteInput: {
     borderRadius: BorderRadius.sm,
